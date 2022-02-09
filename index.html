@@ -1,0 +1,533 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="GMA1D-gh-pages/javascripts/vector.js"></script>
+    <script src="GMA1D-gh-pages/javascripts/ODE.js"></script>
+	<script>
+//pseudocode
+/*
+  1.Grab the accordion buttons from the DOM
+  2. go through each accordion button one by one
+  3. Use the classlist dom method in combination with the toggle method provided by the DOM to add or remove the "is-open" class. At this point, the accordion button should be able to switch back and forth between its font awesome icons but there is no content inside of it. This is because of the overflow:hidden and the max-height of zero; it is hiding our content. So now we must use javascript to change these values with DOM CSS
+  4. get the div that has the content of the accordion button you are currently looking at; we do this using the .nextElementSibling method which allows us to look at the html element that is directly next to the current html element we are looking at. Since we are currently looking at a button (accordion button), the next element after that is the div with the class accordion-content. This is exactly what we want because it allows us to work with the div that has the content that we want to display. Also please note that we could have got to this div in another way but this is the "shortest path" to our answer.
+  
+  5. set the max-height based on whether the current value of the max-height css property. If the max-height is currently 0 (if the page has just been visited for the first time) or null (if it has been toggled once already) which means that it is closed, you will give it an actual value so the content will be shown; if not then that means the max-height currently has a value and you can set it back to null to close it.
+  6. If the accordion is closed we set the max-height of the currently hidden text inside the accordion from 0 to the scroll height of the content inside the accordion. The scroll height refers to the height of an html element in pixels. For this specific example, we are talking about the height of the div with the class accordion-content with all of its nested ptags
+*/
+
+	</script>
+   <script>
+            ka = 1;
+            ke = function(t) {
+                return 0.1;
+            };
+            Td = 4;
+            Dose = 40;
+
+            var V = function(t, pt) {
+                if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
+                    pt[0] = Dose;
+                }
+
+                var Ca = pt[0], Cx= pt[1];
+                return [-ka*Ca, ka*Ca - ke(t)*Cx];
+            }
+
+            var ode_ = new ODE(V);
+
+            function resolve(results, i) {
+                var c = [];
+
+                for (var j=0; j<2400; j++) {
+                    c[j] = results["pts"][j][i];
+                }
+
+                return c;
+            }
+
+            function solve() {
+                results = ode_.solve(2400, 0.1, 0, [0,0]);
+
+                return [resolve(results, 1)];
+            }
+   </script>
+ 
+<style>
+/* body {
+  background-color: #6DC4F4;
+}h1 { 
+     color:white;
+ 
+} */
+
+.container {
+  width: 80%;
+  max-width: 600px;
+  margin: 50px auto;
+}
+
+button.accordion {
+  width: 100%;
+  background-color: whitesmoke;
+  border: none;
+  outline: none;
+  text-align: left;
+  padding: 15px 20px;
+  font-size: 18px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s linear;
+}
+
+button.accordion:after {
+  font-family: FontAwesome;
+  content: "\f150";
+  font-family: "fontawesome";
+  font-size: 18px;
+  float: right;
+}
+
+button.accordion.is-open:after {
+  content: "\f151";
+}
+
+button.accordion:hover,
+button.accordion.is-open {
+  background-color: #ddd;
+}
+
+.accordion-content {
+  background-color: white;
+  border-left: 1px solid whitesmoke;
+  border-right: 1px solid whitesmoke;
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-in-out;
+}
+</style>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+  	
+  	function set(name, e, t) {
+    		document.getElementById(name + t).value = e.value;
+        updateData();
+        updateData_total();
+    }
+    
+  function imm_injury(t, h, l, t0, t1) {
+     if (t<=t0) {
+         return h;
+     } else if (t<=t1) {
+         return h-(h-l)*(t-t0)/(t1-t0);
+     } else {
+         return l;
+     }
+	}
+ 
+  function regular(t, h, l, t0, t1) {
+  	return h;
+  }
+  
+  var curve_f = regular;
+  
+  function changeCurve(name) {
+  	if (name == "regular") {
+    		document.getElementById('lowNumber').style.display = 'None';
+    		document.getElementById('lowRange').style.display = 'None';
+        document.getElementById('t0Number').style.display = 'None';
+        document.getElementById('t0Range').style.display = 'None';
+        document.getElementById('t1Number').style.display = 'None';
+        document.getElementById('t1Range').style.display = 'None';
+        document.getElementById('lowLabel').style.display = 'None';
+        document.getElementById('t0Label').style.display = 'None';
+        document.getElementById('t1Label').style.display = 'None';
+        
+        curve_f = regular;
+        updateData();
+        updateData_total();
+    } else if (name == 'imm_injury') {
+    		document.getElementById('lowNumber').style.display = 'inline-block';
+    		document.getElementById('lowRange').style.display = 'inline-block';
+        document.getElementById('t0Number').style.display = 'inline-block';
+        document.getElementById('t0Range').style.display = 'inline-block';
+        document.getElementById('t1Number').style.display = 'inline-block';
+        document.getElementById('t1Range').style.display = 'inline-block';
+        document.getElementById('lowLabel').style.display = 'inline-block';
+        document.getElementById('t0Label').style.display = 'inline-block';
+        document.getElementById('t1Label').style.display = 'inline-block';
+        
+        curve_f = imm_injury;
+    		updateData();
+            updateData_total();
+    }
+  }
+  
+
+  </script>
+
+
+    <script>
+  	
+  	function set_met(name, e, t) {
+    		document.getElementById(name + t + '-met').value = e.value;
+        updateData_met();
+        updateData_total();
+    }
+    
+ 
+  var curve_f_met = imm_injury;
+  
+  function changeCurve_met(name) {
+  	if (name == "regular") {
+    		document.getElementById('lowNumber-met').style.display = 'None';
+    		document.getElementById('lowRange-met').style.display = 'None';
+        document.getElementById('t0Number-met').style.display = 'None';
+        document.getElementById('t0Range-met').style.display = 'None';
+        document.getElementById('t1Number-met').style.display = 'None';
+        document.getElementById('t1Range-met').style.display = 'None';
+        document.getElementById('lowLabel-met').style.display = 'None';
+        document.getElementById('t0Label-met').style.display = 'None';
+        document.getElementById('t1Label-met').style.display = 'None';
+        
+        curve_f_met = regular;
+        updateData_met();
+        updateData_total();
+    } else if (name == 'imm_injury') {
+    		document.getElementById('lowNumber-met').style.display = 'inline-block';
+    		document.getElementById('lowRange-met').style.display = 'inline-block';
+        document.getElementById('t0Number-met').style.display = 'inline-block';
+        document.getElementById('t0Range-met').style.display = 'inline-block';
+        document.getElementById('t1Number-met').style.display = 'inline-block';
+        document.getElementById('t1Range-met').style.display = 'inline-block';
+        document.getElementById('lowLabel-met').style.display = 'inline-block';
+        document.getElementById('t0Label-met').style.display = 'inline-block';
+        document.getElementById('t1Label-met').style.display = 'inline-block';
+        
+        curve_f_met = imm_injury;
+    		updateData_met();
+            updateData_total();
+    }
+  }
+</script>
+<div class="container">
+  <h1>DemoTox-PK</h1>
+  
+  <canvas id="totalChart"></canvas>
+
+  <button class="accordion">Model parameters</button>
+  <div class="accordion-content">
+    <p>
+	<form>
+		<label id="kaLabel" style="float: left; width: 40px;">ka: </label><input id="kaRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Number');" />
+		<input id="kaNumber" type="number" name="amountInput" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Range');" />
+    <br />
+
+		<label id="keLabel" style="float: left; width: 40px;">ke: </label><input id="keRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ke', this, 'Number');" />
+		<input id="keNumber" type="number" name="amountInput" min="0" max="3" value="0.1" step="0.1" oninput="set('ke', this, 'Range');" />
+        <label id"keChangeLabel">change at 120: </label>
+        <input id="keChange" type="checkbox" onclick="changeKe(this);" />
+    <br />
+  
+
+
+    </form> 
+       </p>
+  </div>
+
+
+
+
+
+  <button class="accordion">Drug toxicity threshold</button>
+  <div class="accordion-content">
+    <p>
+	<form>
+    <label id="highLabel" style="float: left; width: 80px;">curve type: </label><select onchange="changeCurve(this.value);">
+      <option value="regular" selected>regular</option>
+      <option value="imm_injury">immune injury</option>
+    </select><br />
+    
+		<label id="highLabel" style="float: left; width: 40px;">high: </label><input id="highRange" type="range" name="amountRange" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Number');" />
+		<input id="highNumber" type="number" name="amountInput" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Range');" />
+    <br />
+    
+    
+    <label id="lowLabel" style="float: left; width: 40px;">low: </label><input id="lowRange" type="range" name="amountRange" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Number');" />
+		<input id="lowNumber" type="number" name="amountInput" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Range');" />
+    <br />
+    
+    <label id="t0Label" style="float: left; width: 40px;">t0: </label><input id="t0Range" type="range" name="amountRange" min="0" max="240" value="3" step="1" oninput="set('t0', this, 'Number');" />
+		<input id="t0Number" type="number" name="amountInput" min="0" max="240" value="40" step="1" oninput="set('t0', this, 'Range');" />
+    <br />
+    
+    
+    <label id="t1Label" style="float: left; width: 40px;">t1: </label><input id="t1Range" type="range" name="amountRange" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Number');" />
+		<input id="t1Number" type="number" name="amountInput" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Range');" />
+	</form>
+  
+  <div style="width:350px;">
+    <canvas id="myChart"></canvas>
+  </div>
+
+    </p>
+  </div>
+
+  <button class="accordion">Drug metabolite toxicity threshold</button>
+  <div class="accordion-content">
+    <p>
+	<form>
+        <label id="labelShowMetabolite" style="float: left;">Show metabolite toxicity threshold: </label><input type="checkbox" id="showMetabolite" name="showMetabolite" onclick="updateData_total();" />
+        <br/><br/>
+    <label id="highLabel-met" style="float: left; width: 80px;">curve type: </label><select onchange="changeCurve_met(this.value);">
+      <option value="regular">regular</option>
+      <option value="imm_injury" selected>immune injury</option>
+    </select><br />
+    
+		<label id="highLabel-met" style="float: left; width: 40px;">high: </label><input id="highRange-met" type="range" name="amountRange" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Number');" />
+		<input id="highNumber-met" type="number" name="amountInput" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Range');" />
+    <br />
+    
+    
+    <label id="lowLabel-met" style="float: left; width: 40px;">low: </label><input id="lowRange-met" type="range" name="amountRange" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Number');" />
+		<input id="lowNumber-met" type="number" name="amountInput" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Range');" />
+    <br />
+    
+    <label id="t0Label-met" style="float: left; width: 40px;">t0: </label><input id="t0Range-met" type="range" name="amountRange" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Number');" />
+		<input id="t0Number-met" type="number" name="amountInput" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Range');" />
+    <br />
+    
+    
+    <label id="t1Label-met" style="float: left; width: 40px;">t1: </label><input id="t1Range-met" type="range" name="amountRange" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Number');" />
+		<input id="t1Number-met" type="number" name="amountInput" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Range');" />
+	</form>
+  
+  <div style="width:350px;">
+    <canvas id="myChart-met"></canvas>
+  </div>
+
+
+    </p>
+  </div>
+</div>
+  <script>
+    noPoints = 2400;
+
+  	function makeData() {
+      var labels = [];
+      var data = [];
+
+      for (var i=0; i < noPoints; i++) {
+          labels.push(i/10);
+      }
+
+
+      var h = document.getElementById('highNumber').value;
+      var l = document.getElementById('lowNumber').value;
+      var t0 = document.getElementById('t0Number').value;
+      var t1 = document.getElementById('t1Number').value;
+
+      for (var i=0; i < noPoints; i++) {
+        data.push( curve_f(i/10, h, l, t0, t1) );
+      }
+      return [labels, data]
+    }
+    
+    function updateData() {
+    		var data = makeData()[1];
+        
+        myChart.data.datasets[0].data = data;
+        myChart.update();
+    }
+    const ctx = document.getElementById('myChart').getContext('2d');
+    var mData = makeData();
+
+    
+    
+    const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: mData[0],
+        datasets: [{
+            label: 'toxicity threshold',
+            data: mData[1],
+            borderColor: "#FF0000",
+      		backgroundColor: "#FF0000",
+            borderDash: [5,5]
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 180
+            }
+        },
+        radius: 0
+    }
+});</script>
+
+   <script>
+  	function makeData_met() {
+      var labels = [];
+      var data = [];
+
+      for (var i=0; i < noPoints; i++) {
+          labels.push(i/10);
+      }
+
+
+      var h = document.getElementById('highNumber-met').value;
+      var l = document.getElementById('lowNumber-met').value;
+      var t0 = document.getElementById('t0Number-met').value;
+      var t1 = document.getElementById('t1Number-met').value;
+
+      for (var i=0; i < noPoints; i++) {
+        data.push( curve_f_met(i/10, h, l, t0, t1) );
+      }
+      return [labels, data]
+    }
+    
+    function updateData_met() {
+    		var data = makeData_met()[1];
+        
+        myChart_met.data.datasets[0].data = data;
+        myChart_met.update();
+    }
+    const ctx_met = document.getElementById('myChart-met').getContext('2d');
+    var mData = makeData_met();
+
+    
+    
+    const myChart_met = new Chart(ctx_met, {
+    type: 'line',
+    data: {
+        labels: mData[0],
+        datasets: [{
+            label: 'metabolite toxicity threshold',
+            data: mData[1],
+            borderColor: "#0000FF",
+      		backgroundColor: "#0000FF",
+            borderDash: [5,5]
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 180
+            }
+        },
+        radius: 0
+    }
+});</script>
+
+
+   <script>
+    const ctx_total = document.getElementById('totalChart').getContext('2d');
+
+    function updateData_total() {
+        var el = document.getElementById('keChange');
+
+        ka = document.getElementById('kaNumber').value;
+          if (el.checked) {
+              ke = function(t) {
+                  if (t<120) {
+                      return document.getElementById('keNumber').value;
+                  } else {
+                      return 0.01
+                  }
+              }
+          } else {
+              ke = function(t) {return document.getElementById('keNumber').value;}
+          }
+     
+       // ke = function(t) {return document.getElementById('keNumber').value;}
+
+    	var data = makeData();
+        var data_met = makeData_met();
+        
+        myChart_total.data.datasets[0].data = data[1];
+        if (document.getElementById('showMetabolite').checked) {
+            myChart_total.data.datasets[1].data = data_met[1];
+        } else {
+            myChart_total.data.datasets[1].data = []; 
+        }
+        myChart_total.data.datasets[2].data = solve()[0];
+        myChart_total.update();
+    }
+    	var data = makeData();
+        var data_met = makeData_met();
+   
+    
+    const myChart_total = new Chart(ctx_total, {
+    type: 'line',
+    data: {
+        labels: data[0],
+        datasets: [
+            {label: "toxicity threshold", data: [], borderColor: "#FF0000", backgroundColor: "#FF0000", borderDash: [5,5]},
+            {label: "metabolite toxicity threshold", data: [], borderColor: "#0000FF", backgroundColor: "#0000FF", borderDash: [5,5]},
+            {label: "drug concentration", data: [], borderColor: "#000000", backgroundColor: "#000000", borderDash: [0,0]}
+ 
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 180
+            }
+        },
+        radius: 0
+    }
+});
+  updateData_total(); 
+   </script>
+
+
+
+
+
+
+
+ 
+<script>
+//pseudocode
+/*
+  1.Grab the accordion buttons from the DOM
+  2. go through each accordion button one by one
+  3. Use the classlist dom method in combination with the toggle method provided by the DOM to add or remove the "is-open" class. At this point, the accordion button should be able to switch back and forth between its font awesome icons but there is no content inside of it. This is because of the overflow:hidden and the max-height of zero; it is hiding our content. So now we must use javascript to change these values with DOM CSS
+  4. get the div that has the content of the accordion button you are currently looking at; we do this using the .nextElementSibling method which allows us to look at the html element that is directly next to the current html element we are looking at. Since we are currently looking at a button (accordion button), the next element after that is the div with the class accordion-content. This is exactly what we want because it allows us to work with the div that has the content that we want to display. Also please note that we could have got to this div in another way but this is the "shortest path" to our answer.
+  
+  5. set the max-height based on whether the current value of the max-height css property. If the max-height is currently 0 (if the page has just been visited for the first time) or null (if it has been toggled once already) which means that it is closed, you will give it an actual value so the content will be shown; if not then that means the max-height currently has a value and you can set it back to null to close it.
+  6. If the accordion is closed we set the max-height of the currently hidden text inside the accordion from 0 to the scroll height of the content inside the accordion. The scroll height refers to the height of an html element in pixels. For this specific example, we are talking about the height of the div with the class accordion-content with all of its nested ptags
+*/
+
+const accordionBtns = document.querySelectorAll(".accordion");
+
+accordionBtns.forEach((accordion) => {
+  accordion.onclick = function () {
+    this.classList.toggle("is-open");
+
+    let content = this.nextElementSibling;
+    console.log(content);
+
+    if (content.style.maxHeight) {
+      //this is if the accordion is open
+      content.style.maxHeight = null;
+    } else {
+      //if the accordion is currently closed
+      content.style.maxHeight = content.scrollHeight + "px";
+      console.log(content.style.maxHeight);
+    }
+  };
+});
+</script>
+<script>
+  changeCurve('regular');
+  function changeKe(el) {
+     updateData_total();
+  }
+</script>
+</body>
