@@ -79,7 +79,7 @@ button.accordion {
   outline: none;
   text-align: left;
   padding: 15px 20px;
-  font-size: 18px;
+  font-size: 45px;
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s linear;
@@ -226,7 +226,7 @@ button.accordion.is-open {
 
   <div style="overflow-y: auto; max-height: 500px;">
   
-  <button class="accordion" style="font-size: 30px;">Model parameters</button>
+  <button class="accordion">Model parameters</button>
   <div class="accordion-content">
     <p>
 	<form>
@@ -529,6 +529,17 @@ button.accordion.is-open {
         ]
     },
     options: {
+        plugins: {
+            legend: {
+                labels: {
+                        color: '#000000',
+                        font: {
+                            size: 30,
+                            weight: 600
+                        }
+                }
+            }
+        },
         scales: {
             y: {
                 beginAtZero: true,
@@ -537,7 +548,7 @@ button.accordion.is-open {
 
                         color: '#000000',
                         font: {
-                            size: 20,
+                            size: 30,
                             weight: 600
                         }
                 }
@@ -547,7 +558,7 @@ button.accordion.is-open {
 
                         color: '#000000',
                         font: {
-                            size: 20,
+                            size: 30,
                             weight: 600
                         }
                 }
