@@ -66,6 +66,39 @@
  
 } */
 
+body {
+    font-size: 28px;
+    font-family: sans-serif;    
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 30px;
+    width: 30px;
+    border-radius: 100px;
+    background: #0000ff;
+    cursor: pointer;
+    border: none;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    outline: 0;
+    margin: 0;
+    padding: 0;
+    height: 25px;
+    width: 320px;
+    border-radius:100px;
+    background: #aaaaaa;
+    border-color: #000000;`
+
+}
+
+input[type="number" i] {
+    font-size: 28px;
+    width: 100px;
+}
+
 .container {
   width: 98%;
   max-width: 860px;
@@ -89,7 +122,7 @@ button.accordion:after {
   font-family: FontAwesome;
   content: "\f150";
   font-family: "fontawesome";
-  font-size: 18px;
+  font-size: 40px;
   float: right;
 }
 
@@ -231,21 +264,21 @@ button.accordion.is-open {
     <p>
 	<form>
         
-		<label id="kaLabel" style="float: left; width: 40px;">ka: </label><input id="kaRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Number');" />
+		<label id="kaLabel" style="float: left; width: 90px;">ka: </label><input id="kaRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Number');" />
 		<input id="kaNumber" type="number" name="amountInput" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Range');" />
     <br />
 
-		<label id="keLabel" style="float: left; width: 40px;">ke: </label><input id="keRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ke', this, 'Number');" />
+		<label id="keLabel" style="float: left; width: 90px;">ke: </label><input id="keRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ke', this, 'Number');" />
 		<input id="keNumber" type="number" name="amountInput" min="0" max="3" value="0.1" step="0.1" oninput="set('ke', this, 'Range');" />
         <label id"keChangeLabel">change at 120: </label>
         <input id="keChange" type="checkbox" onclick="changeKe(this);" />
     <br />
     
-		<label id="FLabel" style="float: left; width: 40px;">F: </label><input id="FRange" type="range" name="amountRange" min="0.05" max="1" value="1" step="0.05" oninput="set('F', this, 'Number');" />
+		<label id="FLabel" style="float: left; width: 90px;">F: </label><input id="FRange" type="range" name="amountRange" min="0.05" max="1" value="1" step="0.05" oninput="set('F', this, 'Number');" />
 		<input id="FNumber" type="number" name="amountInput" min="0.05" max="1" value="1" step="0.05" oninput="set('F', this, 'Range');" />
     <br />
 
-		<label id="VdLabel" style="float: left; width: 40px;">Vd: </label><input id="VdRange" type="range" name="amountRange" min="1" max="60" value="1" step="1" oninput="set('Vd', this, 'Number');" />
+		<label id="VdLabel" style="float: left; width: 90px;">Vd: </label><input id="VdRange" type="range" name="amountRange" min="1" max="60" value="1" step="1" oninput="set('Vd', this, 'Number');" />
 		<input id="VdNumber" type="number" name="amountInput" min="1" max="60" value="1" step="1" oninput="set('Vd', this, 'Range');" />
     <br />
 
@@ -255,16 +288,16 @@ button.accordion.is-open {
         <label id="labelShowMetabolite" style="float: left;">Show metabolite: </label><input type="checkbox" id="showMetabolite" name="showMetabolite" onclick="delayedUpdateData_total();" />
         <br/><br/>
     
-        <label id="vmaxLabel" style="float: left; width: 40px;">vmax: </label><input id="vmaxRange" type="range" name="amountRange" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Number');" />
+        <label id="vmaxLabel" style="float: left; width: 90px;">vmax: </label><input id="vmaxRange" type="range" name="amountRange" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Number');" />
 		<input id="vmaxNumber" type="number" name="amountInput" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Range');" />
    <br />
         
         
-        <label id="kmLabel" style="float: left; width: 40px;">km: </label><input id="kmRange" type="range" name="amountRange" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Number');" />
+        <label id="kmLabel" style="float: left; width: 90px;">km: </label><input id="kmRange" type="range" name="amountRange" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Number');" />
 		<input id="kmNumber" type="number" name="amountInput" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Range');" />
    <br />
 
-        <label id="ke_metLabel" style="float: left; width: 40px;">ke: </label><input id="ke_metRange" type="range" name="amountRange" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Number');" />
+        <label id="ke_metLabel" style="float: left; width: 90px;">ke: </label><input id="ke_metRange" type="range" name="amountRange" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Number');" />
 		<input id="ke_metNumber" type="number" name="amountInput" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Range');" />
     <br />
   
@@ -287,25 +320,25 @@ button.accordion.is-open {
       <option value="imm_injury">immune injury</option>
     </select><br />
     
-		<label id="highLabel" style="float: left; width: 40px;">high: </label><input id="highRange" type="range" name="amountRange" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Number');" />
+		<label id="highLabel" style="float: left; width: 90px;">high: </label><input id="highRange" type="range" name="amountRange" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Number');" />
 		<input id="highNumber" type="number" name="amountInput" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Range');" />
     <br />
     
     
-    <label id="lowLabel" style="float: left; width: 40px;">low: </label><input id="lowRange" type="range" name="amountRange" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Number');" />
+    <label id="lowLabel" style="float: left; width: 90px;">low: </label><input id="lowRange" type="range" name="amountRange" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Number');" />
 		<input id="lowNumber" type="number" name="amountInput" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Range');" />
     <br />
     
-    <label id="t0Label" style="float: left; width: 40px;">t0: </label><input id="t0Range" type="range" name="amountRange" min="0" max="240" value="3" step="1" oninput="set('t0', this, 'Number');" />
+    <label id="t0Label" style="float: left; width: 90px;">t0: </label><input id="t0Range" type="range" name="amountRange" min="0" max="240" value="3" step="1" oninput="set('t0', this, 'Number');" />
 		<input id="t0Number" type="number" name="amountInput" min="0" max="240" value="40" step="1" oninput="set('t0', this, 'Range');" />
     <br />
     
     
-    <label id="t1Label" style="float: left; width: 40px;">t1: </label><input id="t1Range" type="range" name="amountRange" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Number');" />
+    <label id="t1Label" style="float: left; width: 90px;">t1: </label><input id="t1Range" type="range" name="amountRange" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Number');" />
 		<input id="t1Number" type="number" name="amountInput" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Range');" />
 	</form>
   
-  <div style="width:350px;">
+  <div style="width:390px;">
     <canvas id="myChart"></canvas>
   </div>
 
@@ -321,25 +354,25 @@ button.accordion.is-open {
       <option value="imm_injury" selected>immune injury</option>
     </select><br />
     
-		<label id="highLabel-met" style="float: left; width: 40px;">high: </label><input id="highRange-met" type="range" name="amountRange" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Number');" />
+		<label id="highLabel-met" style="float: left; width: 90px;">high: </label><input id="highRange-met" type="range" name="amountRange" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Number');" />
 		<input id="highNumber-met" type="number" name="amountInput" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Range');" />
     <br />
     
     
-    <label id="lowLabel-met" style="float: left; width: 40px;">low: </label><input id="lowRange-met" type="range" name="amountRange" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Number');" />
+    <label id="lowLabel-met" style="float: left; width: 90px;">low: </label><input id="lowRange-met" type="range" name="amountRange" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Number');" />
 		<input id="lowNumber-met" type="number" name="amountInput" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Range');" />
     <br />
     
-    <label id="t0Label-met" style="float: left; width: 40px;">t0: </label><input id="t0Range-met" type="range" name="amountRange" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Number');" />
+    <label id="t0Label-met" style="float: left; width: 90px;">t0: </label><input id="t0Range-met" type="range" name="amountRange" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Number');" />
 		<input id="t0Number-met" type="number" name="amountInput" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Range');" />
     <br />
     
     
-    <label id="t1Label-met" style="float: left; width: 40px;">t1: </label><input id="t1Range-met" type="range" name="amountRange" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Number');" />
+    <label id="t1Label-met" style="float: left; width: 90px;">t1: </label><input id="t1Range-met" type="range" name="amountRange" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Number');" />
 		<input id="t1Number-met" type="number" name="amountInput" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Range');" />
 	</form>
   
-  <div style="width:350px;">
+  <div style="width:390px;">
     <canvas id="myChart-met"></canvas>
   </div>
 
