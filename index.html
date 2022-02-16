@@ -349,7 +349,7 @@ button.accordion.is-open {
   </div>
 </div>
   <script>
-    noPoints = 450;
+    noPoints = 400;
     step = 0.2;
 
   	function makeData() {
@@ -545,7 +545,6 @@ button.accordion.is-open {
                 beginAtZero: true,
                 max: 180,
                 ticks: {
-
                         color: '#000000',
                         font: {
                             size: 30,
@@ -554,8 +553,12 @@ button.accordion.is-open {
                 }
              },
              x: {
+                grid: {
+                    display: false
+                },
                 ticks: {
-
+                        
+                        display: false,
                         color: '#000000',
                         font: {
                             size: 30,
