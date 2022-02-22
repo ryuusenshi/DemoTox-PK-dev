@@ -251,6 +251,86 @@ button.accordion.is-open {
             delayedUpdateData_total();
     }
   }
+  
+  function changeScenario(name) {
+    if (name=="sc_maintenance") {
+        document.getElementById("kaNumber").value = 1;
+        document.getElementById("kaRange").value = 1;
+
+        document.getElementById("keNumber").value = 0.1;
+        document.getElementById("keRange").value = 0.1;
+        
+        document.getElementById("keChange").checked = false;
+
+
+        document.getElementById("FNumber").value = 1;
+        document.getElementById("FRange").value = 1;
+
+        document.getElementById("VdNumber").value = 1;
+        document.getElementById("VdRange").value = 1;
+
+        document.getElementById("showMetabolite").checked = false;
+        
+        document.getElementById("highNumber").value = 144;
+        document.getElementById("highRange").value = 144;
+
+        document.getElementById("curveType").value = "regular";
+        
+        updateData();
+        updateData_total();
+    } else if (name=="sc_compromised_start") {
+        document.getElementById("kaNumber").value = 1;
+        document.getElementById("kaRange").value = 1;
+
+        document.getElementById("keNumber").value = 0.07;
+        document.getElementById("keRange").value = 0.07;
+
+        document.getElementById("keChange").checked = false;
+
+
+        document.getElementById("FNumber").value = 1;
+        document.getElementById("FRange").value = 1;
+
+        document.getElementById("VdNumber").value = 1;
+        document.getElementById("VdRange").value = 1;
+
+        document.getElementById("showMetabolite").checked = false;
+        
+        document.getElementById("highNumber").value = 144;
+        document.getElementById("highRange").value = 144;
+
+        document.getElementById("curveType").value = "regular";
+        
+        updateData();
+        updateData_total();
+    } else if (name=="sc_compromised_during") {
+        document.getElementById("kaNumber").value = 1;
+        document.getElementById("kaRange").value = 1;
+
+        document.getElementById("keNumber").value = 0.1;
+        document.getElementById("keRange").value = 0.1;
+
+        document.getElementById("keChange").checked = true;
+
+
+        document.getElementById("FNumber").value = 1;
+        document.getElementById("FRange").value = 1;
+
+        document.getElementById("VdNumber").value = 1;
+        document.getElementById("VdRange").value = 1;
+
+        document.getElementById("showMetabolite").checked = false;
+        
+        document.getElementById("highNumber").value = 144;
+        document.getElementById("highRange").value = 144;
+
+        document.getElementById("curveType").value = "regular";
+        
+        updateData();
+        updateData_total();
+    }
+
+  }
 </script>
 <div class="container">
   <h1>DemoTox-PK</h1>
@@ -258,6 +338,31 @@ button.accordion.is-open {
   <canvas id="totalChart"></canvas>
 
   <div style="overflow-y: auto; max-height: 500px;">
+
+
+
+
+  <button class="accordion">IDILI hypotheses</button>
+  <div class="accordion-content">
+    <p>
+	<form>
+    <label id="hypoLabel" style="float: left; width: 120px;">scenario: </label><select onchange="changeScenario(this.value);">
+      <option value="sc_maintenance" selected>drug maintenance</option>
+      <option value="sc_compromised_start" >compromised kinetics at offset</option>
+      <option value="sc_compromised_during" >compromised kinetics during therapy</option>
+
+      <option value="sc_custom">custom</option>
+    </select><br />
+    
+		
+    </form> 
+       </p>
+  </div>
+
+
+
+
+
   
   <button class="accordion">Model parameters</button>
   <div class="accordion-content">
@@ -270,7 +375,7 @@ button.accordion.is-open {
 
 		<label id="keLabel" style="float: left; width: 90px;">ke: </label><input id="keRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ke', this, 'Number');" />
 		<input id="keNumber" type="number" name="amountInput" min="0" max="3" value="0.1" step="0.1" oninput="set('ke', this, 'Range');" />
-        <label id"keChangeLabel">change at 120: </label>
+        <label id"keChangeLabel">change: </label>
         <input id="keChange" type="checkbox" onclick="changeKe(this);" />
     <br />
     
@@ -315,7 +420,9 @@ button.accordion.is-open {
   <div class="accordion-content">
     <p>
 	<form>
-    <label id="highLabel" style="float: left; width: 80px;">curve type: </label><select onchange="changeCurve(this.value);">
+    <label id="curveTypeLabel" style="float: left; width: 80px;">curve type: </label>
+    
+    <select id="curveType" onchange="changeCurve(this.value);">
       <option value="regular" selected>regular</option>
       <option value="imm_injury">immune injury</option>
     </select><br />
@@ -510,7 +617,7 @@ button.accordion.is-open {
         ka = document.getElementById('kaNumber').value;
           if (el.checked) {
               ke = function(t) {
-                  if (t<120) {
+                  if (t<40) {
                       return document.getElementById('keNumber').value;
                   } else {
                       return 0.01
