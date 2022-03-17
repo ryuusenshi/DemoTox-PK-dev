@@ -59,6 +59,94 @@
    </script>
  
 <style>
+
+/* begin tooltip */
+.help-tip{
+    position: absolute;
+    top: 5px;
+    right: 18px;
+    text-align: center;
+    background-color: #BCDBEA;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 26px;
+    cursor: default;
+}
+
+.help-tip:before{
+    content:'?';
+    font-weight: bold;
+    color:#fff;
+}
+
+.help-tip:hover p{
+    display:block;
+    transform-origin: 100% 0%;
+
+    -webkit-animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
+
+}
+
+.help-tip p{    /* The tooltip */
+    display: none;
+    text-align: left;
+    background-color: #1E2021;
+    padding: 20px;
+    width: 300px;
+    position: absolute;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    left: 30px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 1.4;
+	top: -34px;
+}
+
+/*.help-tip p:before{ /* The pointer of the tooltip */
+    position: absolute;
+    content: '';
+    width:0;
+    height: 0;
+    border:6px solid transparent;
+    border-bottom-color:#1E2021;
+    right:10px;
+    top:-12px;
+}*/
+
+.help-tip p:after{ /* Prevents the tooltip from being hidden */
+    width:100%;
+    height:40px;
+    content:'';
+    position: absolute;
+    top:-40px;
+    left:0;
+}
+
+/* CSS animation */
+
+@-webkit-keyframes fadeIn {
+    0% { 
+        opacity:0; 
+        transform: scale(0.6);
+    }
+
+    100% {
+        opacity:100%;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity:0; }
+    100% { opacity:100%; }
+}
+
+/* end tooltip */
+
 /* body {
   background-color: #6DC4F4;
 }h1 { 
@@ -76,10 +164,15 @@ input[type=range]::-webkit-slider-thumb {
     height: 30px;
     width: 30px;
     border-radius: 100px;
-    background: #0000ff;
+    background: #0000FF;
     cursor: pointer;
     border: none;
 }
+
+input[type=range]:disabled::-webkit-slider-thumb {
+    background: #DDDDDD;
+}
+
 
 input[type=range] {
     -webkit-appearance: none;
@@ -93,6 +186,12 @@ input[type=range] {
     border-color: #000000;`
 
 }
+
+input[type=range]:disabled {
+    background: #DDDDDD;
+}
+
+
 
 input[type="number" i] {
     font-size: 28px;
@@ -181,33 +280,33 @@ button.accordion.is-open {
   
   function changeCurve(name) {
   	if (name == "regular") {
-    		document.getElementById('lowNumber').style.display = 'None';
-    		document.getElementById('lowRange').style.display = 'None';
-        document.getElementById('t0Number').style.display = 'None';
-        document.getElementById('t0Range').style.display = 'None';
-        document.getElementById('t1Number').style.display = 'None';
-        document.getElementById('t1Range').style.display = 'None';
-        document.getElementById('lowLabel').style.display = 'None';
-        document.getElementById('t0Label').style.display = 'None';
-        document.getElementById('t1Label').style.display = 'None';
+		document.getElementById('lowNumber').style.visibility = 'hidden';
+		document.getElementById('lowRange').style.visibility = 'hidden';
+        document.getElementById('t0Number').style.visibility = 'hidden';
+        document.getElementById('t0Range').style.visibility = 'hidden';
+        document.getElementById('t1Number').style.visibility = 'hidden';
+        document.getElementById('t1Range').style.visibility = 'hidden';
+        document.getElementById('lowLabel').style.visibility = 'hidden';
+        document.getElementById('t0Container').style.visibility = 'hidden';
+        document.getElementById('t1Container').style.visibility = 'hidden';
         
         curve_f = regular;
         updateData();
         delayedUpdateData_total();
     } else if (name == 'imm_injury') {
-    		document.getElementById('lowNumber').style.display = 'inline-block';
-    		document.getElementById('lowRange').style.display = 'inline-block';
-        document.getElementById('t0Number').style.display = 'inline-block';
-        document.getElementById('t0Range').style.display = 'inline-block';
-        document.getElementById('t1Number').style.display = 'inline-block';
-        document.getElementById('t1Range').style.display = 'inline-block';
-        document.getElementById('lowLabel').style.display = 'inline-block';
-        document.getElementById('t0Label').style.display = 'inline-block';
-        document.getElementById('t1Label').style.display = 'inline-block';
+		document.getElementById('lowNumber').style.visibility = 'visible';
+		document.getElementById('lowRange').style.visibility = 'visible';
+        document.getElementById('t0Number').style.visibility = 'visible';
+        document.getElementById('t0Range').style.visibility = 'visible';
+        document.getElementById('t1Number').style.visibility = 'visible';
+        document.getElementById('t1Range').style.visibility = 'visible';
+        document.getElementById('lowLabel').style.visibility = 'visible';
+        document.getElementById('t0Container').style.visibility = 'visible';
+        document.getElementById('t1Container').style.visibility = 'visible';
         
         curve_f = imm_injury;
-    		updateData();
-            delayedUpdateData_total();
+		updateData();
+		delayedUpdateData_total();
     }
   }
   
@@ -218,7 +317,7 @@ button.accordion.is-open {
     <script>
   	
   	function set_met(name, e, t) {
-    		document.getElementById(name + t + '-met').value = e.value;
+    	document.getElementById(name + t + '-met').value = e.value;
         updateData_met();
         delayedUpdateData_total();
     }
@@ -228,33 +327,33 @@ button.accordion.is-open {
   
   function changeCurve_met(name) {
   	if (name == "regular") {
-    		document.getElementById('lowNumber-met').style.display = 'None';
-    		document.getElementById('lowRange-met').style.display = 'None';
-        document.getElementById('t0Number-met').style.display = 'None';
-        document.getElementById('t0Range-met').style.display = 'None';
-        document.getElementById('t1Number-met').style.display = 'None';
-        document.getElementById('t1Range-met').style.display = 'None';
-        document.getElementById('lowLabel-met').style.display = 'None';
-        document.getElementById('t0Label-met').style.display = 'None';
-        document.getElementById('t1Label-met').style.display = 'None';
+    	document.getElementById('lowNumber-met').style.visibility = 'hidden';
+    	document.getElementById('lowRange-met').style.visibility = 'hidden';
+        document.getElementById('t0Number-met').style.visibility = 'hidden';
+        document.getElementById('t0Range-met').style.visibility = 'hidden';
+        document.getElementById('t1Number-met').style.visibility = 'hidden';
+        document.getElementById('t1Range-met').style.visibility = 'hidden';
+        document.getElementById('lowLabel-met').style.visibility = 'hidden';
+        document.getElementById('t0Container-met').style.visibility = 'hidden';
+        document.getElementById('t1Container-met').style.visibility = 'hidden';
         
         curve_f_met = regular;
         updateData_met();
         delayedUpdateData_total();
     } else if (name == 'imm_injury') {
-    		document.getElementById('lowNumber-met').style.display = 'inline-block';
-    		document.getElementById('lowRange-met').style.display = 'inline-block';
-        document.getElementById('t0Number-met').style.display = 'inline-block';
-        document.getElementById('t0Range-met').style.display = 'inline-block';
-        document.getElementById('t1Number-met').style.display = 'inline-block';
-        document.getElementById('t1Range-met').style.display = 'inline-block';
-        document.getElementById('lowLabel-met').style.display = 'inline-block';
-        document.getElementById('t0Label-met').style.display = 'inline-block';
-        document.getElementById('t1Label-met').style.display = 'inline-block';
+    	document.getElementById('lowNumber-met').style.visibility = 'visible';
+    	document.getElementById('lowRange-met').style.visibility = 'visible';
+        document.getElementById('t0Number-met').style.visibility = 'visible';
+        document.getElementById('t0Range-met').style.visibility = 'visible';
+        document.getElementById('t1Number-met').style.visibility = 'visible';
+        document.getElementById('t1Range-met').style.visibility = 'visible';
+        document.getElementById('lowLabel-met').style.visibility = 'visible';
+        document.getElementById('t0Container-met').style.visibility = 'visible';
+        document.getElementById('t1Container-met').style.visibility = 'visible';
         
         curve_f_met = imm_injury;
-    		updateData_met();
-            delayedUpdateData_total();
+    	updateData_met();
+        delayedUpdateData_total();
     }
   }
   
@@ -276,12 +375,12 @@ button.accordion.is-open {
         document.getElementById("VdRange").value = 1;
 
         document.getElementById("showMetabolite").checked = false;
-        
+ 
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        document.getElementById("curveType").value = "regular";
-        
+        changeCurve("regular"); 
+
         updateData();
         updateData_total();
     } else if (name=="sc_compromised_start") {
@@ -301,12 +400,14 @@ button.accordion.is-open {
         document.getElementById("VdRange").value = 1;
 
         document.getElementById("showMetabolite").checked = false;
-        
+
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        document.getElementById("curveType").value = "regular";
-        
+        //document.getElementById("curveType").value = "regular";
+        changeCurve("regular"); 
+
+       
         updateData();
         updateData_total();
     } else if (name=="sc_compromised_during") {
@@ -330,8 +431,10 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        document.getElementById("curveType").value = "regular";
-        
+        //document.getElementById("curveType").value = "regular";
+		changeCurve("regular"); 
+
+
         updateData();
         updateData_total();
 
@@ -344,7 +447,6 @@ button.accordion.is-open {
 
         document.getElementById("keChange").checked = false;
 
-
         document.getElementById("FNumber").value = 1;
         document.getElementById("FRange").value = 1;
 
@@ -352,14 +454,31 @@ button.accordion.is-open {
         document.getElementById("VdRange").value = 1;
 
         document.getElementById("showMetabolite").checked = true;
+
+		toggleMetaboliteBoxes();        
+
+		// metabolite
+        document.getElementById("vmaxNumber").value = 100;
+        document.getElementById("vmaxRange").value = 100;
+
+        document.getElementById("kmNumber").value = 1000;
+        document.getElementById("kmRange").value = 1000;
+
+        document.getElementById("ke_metNumber").value = 0.5;
+        document.getElementById("ke_metRange").value = 0.5;
+
+
+
+
+
         
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        document.getElementById("curveType").value = "regular";
+        //document.getElementById("curveType").value = "regular";
         
         //document.getElementById("curveType-met").value = "regular";
-
+        changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
         document.getElementById("highRange-met").value = 20;
@@ -377,11 +496,7 @@ button.accordion.is-open {
         document.getElementById("keRange").value = 0.1;
 
         document.getElementById("keChange").checked = false;
-
-        document.getElementById("ke_metNumber").value = 0.15;
-        document.getElementById("ke_metRange").value = 0.15;
-
-        //document.getElementById("keChange").checked = false;
+       //document.getElementById("keChange").checked = false;
 
 
         document.getElementById("FNumber").value = 1;
@@ -391,14 +506,27 @@ button.accordion.is-open {
         document.getElementById("VdRange").value = 1;
 
         document.getElementById("showMetabolite").checked = true;
-        
+   
+		toggleMetaboliteBoxes();        
+		// metabolite
+        document.getElementById("vmaxNumber").value = 100;
+        document.getElementById("vmaxRange").value = 100;
+
+        document.getElementById("kmNumber").value = 1000;
+        document.getElementById("kmRange").value = 1000;
+
+        document.getElementById("ke_metNumber").value = 0.15;
+        document.getElementById("ke_metRange").value = 0.15;
+
+
+         
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        document.getElementById("curveType").value = "regular";
+        //document.getElementById("curveType").value = "regular";
         
         //document.getElementById("curveType-met").value = "regular";
-
+        changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
         document.getElementById("highRange-met").value = 20;
@@ -433,10 +561,10 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        document.getElementById("curveType").value = "regular";
+        //document.getElementById("curveType").value = "regular";
         
         //document.getElementById("curveType-met").value = "regular";
-
+        changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
         document.getElementById("highRange-met").value = 20;
@@ -471,10 +599,11 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 94;
         document.getElementById("highRange").value = 94;
 
-        document.getElementById("curveType").value = "regular";
+        //document.getElementById("curveType").value = "regular";
         
         //document.getElementById("curveType-met").value = "regular";
 
+        changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
         document.getElementById("highRange-met").value = 20;
@@ -607,17 +736,17 @@ button.accordion.is-open {
     <p>
 	<form>
     <label id="hypoLabel" style="float: left; width: 120px;">scenario: </label><select onchange="changeScenario(this.value);">
-      <option value="sc_maintenance" selected>Drug maintenance</option>
-      <option value="sc_compromised_start" >Compromised drug kinetics at offset</option>
+      <option value="sc_maintenance" selected>Therapeutic drug maintenance</option>
+      <option value="sc_compromised_start" >Compromised drug kinetics at onset</option>
       <option value="sc_compromised_during" >Compromised drug kinetics during therapy</option>
 
-      <option value="sc_maintenance_met">Drug maintenance - metabolite</option>
-      <option value="sc_compromised_during_met" >Compromised metabolite kinetics at offset</option>
+      <option value="sc_maintenance_met">Therapeutic drug maintenance - metabolite</option>
+      <option value="sc_compromised_during_met" >Compromised metabolite kinetics at onset</option>
 	  <option value="sc_zero_order">Zero-order kinetics</option>
 	  <option value="sc_reduced_tox_threshold">Reduced toxicity threshold</option>
 	  <option value="sc_variable_tox_threshold">Varible toxicity threshold</option>
-	  <option value="sc_immune_injury">Immune injury</option>
-	  <option value="sc_mito_injury">Mitochondrial injury</option>
+	  <option value="sc_immune_injury">Adaptive immune response</option>
+	  <option value="sc_mito_injury">Slowly developing injury (e.g., mitochondrial)</option>
 	  <option value="sc_failure_adapt">Failure to adapt</option>
 
       <option value="sc_custom">custom</option>
@@ -642,7 +771,7 @@ button.accordion.is-open {
 		<input id="kaNumber" type="number" name="amountInput" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Range');" />
     <br />
 
-		<label id="keLabel" style="float: left; width: 90px;">ke: </label><input id="keRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ke', this, 'Number');" />
+		<label id="keLabel" style="float: left; width: 90px;">ke1: </label><input id="keRange" type="range" name="amountRange" min="0" max="3" value="1" step="0.1" oninput="set('ke', this, 'Number');" />
 		<input id="keNumber" type="number" name="amountInput" min="0" max="3" value="0.1" step="0.1" oninput="set('ke', this, 'Range');" />
         <label id"keChangeLabel">change: </label>
         <input id="keChange" type="checkbox" onclick="changeKe(this);" />
@@ -659,20 +788,20 @@ button.accordion.is-open {
 
     <br /><br /><hr />
     
-        <label id="labelShowMetabolite" style="float: left;">Show metabolite: </label><input type="checkbox" id="showMetabolite" name="showMetabolite" onclick="delayedUpdateData_total();" />
+        <label id="labelShowMetabolite" style="float: left;">Show metabolite: </label><input type="checkbox" id="showMetabolite" name="showMetabolite" onclick="delayedUpdateData_total();toggleMetaboliteBoxes();" />
         <br/><br/>
     
-        <label id="vmaxLabel" style="float: left; width: 90px;">vmax: </label><input id="vmaxRange" type="range" name="amountRange" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Number');" />
-		<input id="vmaxNumber" type="number" name="amountInput" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Range');" />
+        <label id="vmaxLabel" style="float: left; width: 90px;">Vmax: </label><input id="vmaxRange" type="range" name="amountRange" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Number');" disabled/>
+		<input id="vmaxNumber" type="number" name="amountInput" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Range');" disabled />
    <br />
         
         
-        <label id="kmLabel" style="float: left; width: 90px;">km: </label><input id="kmRange" type="range" name="amountRange" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Number');" />
-		<input id="kmNumber" type="number" name="amountInput" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Range');" />
+        <label id="kmLabel" style="float: left; width: 90px;">Km: </label><input id="kmRange" type="range" name="amountRange" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Number');" disabled />
+		<input id="kmNumber" type="number" name="amountInput" min="500" max="1500" value="1000" step="100" oninput="set('km', this, 'Range');" disabled />
    <br />
 
-        <label id="ke_metLabel" style="float: left; width: 90px;">ke: </label><input id="ke_metRange" type="range" name="amountRange" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Number');" />
-		<input id="ke_metNumber" type="number" name="amountInput" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Range');" />
+        <label id="ke_metLabel" style="float: left; width: 90px;">ke2: </label><input id="ke_metRange" type="range" name="amountRange" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Number');" disabled />
+		<input id="ke_metNumber" type="number" name="amountInput" min="0" max="3" value="0.5" step="0.1" oninput="set('ke_met', this, 'Range');" disabled />
     <br />
   
 
@@ -689,34 +818,55 @@ button.accordion.is-open {
   <div class="accordion-content">
     <p>
 	<form>
-    <label id="curveTypeLabel" style="float: left; width: 80px;">curve type: </label>
+    <label id="curveTypeLabel" style="float: left; width: 150px;">curve type: </label>
     
     <select id="curveType" onchange="changeCurve(this.value);">
-      <option value="regular" selected>regular</option>
-      <option value="imm_injury">immune injury</option>
-    </select><br />
+      <option value="regular" selected>constant threshold</option>
+      <option value="imm_injury">change in threshold</option>
+    </select><br /><br />
     
-		<label id="highLabel" style="float: left; width: 90px;">high: </label><input id="highRange" type="range" name="amountRange" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Number');" />
+		<label id="highLabel" style="float: left; width: 150px;">value at time=0: </label>
+
+		<input id="highRange" type="range" name="amountRange" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Number');" />
 		<input id="highNumber" type="number" name="amountInput" min="0" max="180" value="144" step="1" oninput="set('high', this, 'Range');" />
-    <br />
+    	<br />
+		<br />
     
     
-    <label id="lowLabel" style="float: left; width: 90px;">low: </label><input id="lowRange" type="range" name="amountRange" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Number');" />
+    <label id="lowLabel" style="float: left; width: 150px;">value at time=t2: </label><input id="lowRange" type="range" name="amountRange" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Number');" />
 		<input id="lowNumber" type="number" name="amountInput" min="0" max="180" value="70" step="1" oninput="set('low', this, 'Range');" />
+    <br /><br />
+
+
+
+    <div id="t0Container" style="position: relative; width: 80px;"> 
+    
+    	<label id="t0Label" style="float: left; width: 150px;">t1: </label>
+		<div class="help-tip">
+			<p>onset of threshold change</p>
+		</div>
+	</div>		
+	<input id="t0Range" type="range" name="amountRange" min="0" max="240" value="3" step="1" oninput="set('t0', this, 'Number');" />
+	<input id="t0Number" type="number" name="amountInput" min="0" max="240" value="40" step="1" oninput="set('t0', this, 'Range');" />
     <br />
     
-    <label id="t0Label" style="float: left; width: 90px;">t0: </label><input id="t0Range" type="range" name="amountRange" min="0" max="240" value="3" step="1" oninput="set('t0', this, 'Number');" />
-		<input id="t0Number" type="number" name="amountInput" min="0" max="240" value="40" step="1" oninput="set('t0', this, 'Range');" />
-    <br />
-    
-    
-    <label id="t1Label" style="float: left; width: 90px;">t1: </label><input id="t1Range" type="range" name="amountRange" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Number');" />
-		<input id="t1Number" type="number" name="amountInput" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Range');" />
+
+
+   	<div id="t1Container" style="position: relative; width: 80px;"> 
+    	<label id="t1Label" style="float: left; width: 150px;">t2:</label> 
+		<div class="help-tip">
+			<p>time to achieve second threshold (slope of change)</p>
+		</div>
+	</div>
+	<input id="t1Range" type="range" name="amountRange" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Number');" />
+	<input id="t1Number" type="number" name="amountInput" min="0" max="240" value="80" step="1" oninput="set('t1', this, 'Range');" />
+
+
 	</form>
   
-  <div style="width:390px;">
+  <!--<div style="width:390px;">
     <canvas id="myChart"></canvas>
-  </div>
+  </div>-->
 
     </p>
   </div>
@@ -725,32 +875,50 @@ button.accordion.is-open {
   <div class="accordion-content">
     <p>
 	<form>
-    <label id="highLabel-met" style="float: left; width: 80px;">curve type: </label><select id="curveType-met" onchange="changeCurve_met(this.value);">
-      <option value="regular">regular</option>
-      <option value="imm_injury" selected>immune injury</option>
-    </select><br />
+    <label id="highLabel-met" style="float: left; width: 150px;">curve type: </label>
+
+	<select id="curveType-met" onchange="changeCurve_met(this.value);">
+      <option value="regular" selected>constant threshold</option>
+      <option value="imm_injury">change in threshold</option>
+    </select><br /><br />
     
-		<label id="highLabel-met" style="float: left; width: 90px;">high: </label><input id="highRange-met" type="range" name="amountRange" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Number');" />
+		<label id="highLabel-met" style="float: left; width: 150px;">value at time=0: </label><input id="highRange-met" type="range" name="amountRange" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Number');" />
 		<input id="highNumber-met" type="number" name="amountInput" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Range');" />
-    <br />
+    <br /><br />
     
     
-    <label id="lowLabel-met" style="float: left; width: 90px;">low: </label><input id="lowRange-met" type="range" name="amountRange" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Number');" />
+    <label id="lowLabel-met" style="float: left; width: 150px;">value at time=t2: </label><input id="lowRange-met" type="range" name="amountRange" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Number');" />
 		<input id="lowNumber-met" type="number" name="amountInput" min="0" max="180" value="10" step="1" oninput="set_met('low', this, 'Range');" />
+    <br /><br />
+   
+	<div id="t0Container-met" style="position: relative; width: 80px;">
+ 
+    	<label id="t0Label-met" style="float: left; width: 150px;">t1: </label>
+		<div class="help-tip">
+			<p>onset of threshold change</p>
+		</div>
+	</div>
+		
+	<input id="t0Range-met" type="range" name="amountRange" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Number');" />
+	<input id="t0Number-met" type="number" name="amountInput" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Range');" />
     <br />
     
-    <label id="t0Label-met" style="float: left; width: 90px;">t0: </label><input id="t0Range-met" type="range" name="amountRange" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Number');" />
-		<input id="t0Number-met" type="number" name="amountInput" min="0" max="240" value="20" step="1" oninput="set_met('t0', this, 'Range');" />
-    <br />
-    
-    
-    <label id="t1Label-met" style="float: left; width: 90px;">t1: </label><input id="t1Range-met" type="range" name="amountRange" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Number');" />
+    <div id="t1Container-met" style="position: relative; width: 80px;">
+
+    	<label id="t1Label-met" style="float: left; width: 150px;">t2: </label>
+		<div class="help-tip">
+			<p>time to achieve second threshold (slope of change)</p>
+		</div>
+	</div>
+
+
+<input id="t1Range-met" type="range" name="amountRange" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Number');" />
 		<input id="t1Number-met" type="number" name="amountInput" min="0" max="240" value="30" step="1" oninput="set_met('t1', this, 'Range');" />
 	</form>
   
-  <div style="width:390px;">
+  <!--<div style="width:390px;">
     <canvas id="myChart-met"></canvas>
-  </div>
+  </div>-->
 
 
     </p>
@@ -784,15 +952,15 @@ button.accordion.is-open {
     function updateData() {
     		var data = makeData()[1];
         
-        myChart.data.datasets[0].data = data;
-        myChart.update();
+        //myChart.data.datasets[0].data = data;
+        //myChart.update();
     }
-    const ctx = document.getElementById('myChart').getContext('2d');
+    //const ctx = document.getElementById('myChart').getContext('2d');
     var mData = makeData();
 
     
     
-    const myChart = new Chart(ctx, {
+    /*const myChart = new Chart(ctx, {
     type: 'line',
     data: {
         labels: mData[0],
@@ -813,7 +981,7 @@ button.accordion.is-open {
         },
         radius: 0
     }
-});</script>
+});*/</script>
 
    <script>
   	function makeData_met() {
@@ -839,15 +1007,15 @@ button.accordion.is-open {
     function updateData_met() {
     		var data = makeData_met()[1];
         
-        myChart_met.data.datasets[0].data = data;
-        myChart_met.update();
+        //myChart_met.data.datasets[0].data = data;
+        //myChart_met.update();
     }
-    const ctx_met = document.getElementById('myChart-met').getContext('2d');
+    //const ctx_met = document.getElementById('myChart-met').getContext('2d');
     var mData = makeData_met();
 
     
     
-    const myChart_met = new Chart(ctx_met, {
+    /*const myChart_met = new Chart(ctx_met, {
     type: 'line',
     data: {
         labels: mData[0],
@@ -868,12 +1036,34 @@ button.accordion.is-open {
         },
         radius: 0
     }
-});</script>
+});*/</script>
 
 
    <script>
     const ctx_total = document.getElementById('totalChart').getContext('2d');
     timeout_Total = 0;
+
+    function toggleMetaboliteBoxes() {
+        var showMet = document.getElementById('showMetabolite').checked;
+
+        if (!showMet) {
+            document.getElementById('vmaxRange').setAttribute('disabled', true);
+            document.getElementById('vmaxNumber').setAttribute('disabled', true);
+            document.getElementById('kmRange').setAttribute('disabled', true);
+            document.getElementById('kmNumber').setAttribute('disabled', true);
+            document.getElementById('ke_metRange').setAttribute('disabled', true);
+            document.getElementById('ke_metNumber').setAttribute('disabled', true);
+ 
+        } else {
+            document.getElementById('vmaxRange').removeAttribute('disabled');
+            document.getElementById('vmaxNumber').removeAttribute('disabled');
+            document.getElementById('kmRange').removeAttribute('disabled');
+            document.getElementById('kmNumber').removeAttribute('disabled');
+            document.getElementById('ke_metRange').removeAttribute('disabled');
+            document.getElementById('ke_metNumber').removeAttribute('disabled');
+ 
+        }
+    }
 
     function delayedUpdateData_total() {
         clearTimeout(timeout_Total);
@@ -930,8 +1120,8 @@ button.accordion.is-open {
     data: {
         labels: data[0],
         datasets: [
-            {label: "toxicity threshold", data: [], borderColor: "#FF0000", backgroundColor: "#FF0000", borderDash: [5,5]},
-            {label: "metabolite toxicity threshold", data: [], borderColor: "#7F00FF", backgroundColor: "#7F00FF", borderDash: [5,5]},
+            {label: "toxicity threshold", data: [], borderColor: "#FF0000", backgroundColor: "#FFFFFF", borderDash: [5,2]},
+            {label: "metabolite toxicity threshold", data: [], borderColor: "#7F00FF", backgroundColor: "#FFFFFF", borderDash: [5,2]},
             {label: "drug concentration", data: [], borderColor: "#000000", backgroundColor: "#000000", borderDash: [0,0]},
             {label: "metabolite concentration", data: [], borderColor: "#0000FF", backgroundColor: "#0000FF", borderDash: [0,0]}
  
@@ -945,10 +1135,14 @@ button.accordion.is-open {
                         font: {
                             size: 28,
                             weight: 400
-                        }
+                        },
+                        //usePointStyle: true,
+                        //pointStyle: 'cirle',
+                        boxHeight: 2
+     
                 },
-				align: 'end'
-            }
+				align: 'end',
+           }
         },
         scales: {
             y: {
@@ -1044,6 +1238,7 @@ accordionBtns.forEach((accordion) => {
 </script>
 <script>
   changeCurve('regular');
+  changeCurve_met('regular');
   function changeKe(el) {
      delayedUpdateData_total();
   }
