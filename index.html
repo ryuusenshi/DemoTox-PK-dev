@@ -54,6 +54,12 @@
             function solve() {
                 results = ode_.solve(noPoints, step, 0, [0, 0, 0]);
 
+                for (var j=0; j<noPoints; j++) {
+                 if (results["pts"][j][0] > 1000 || results["pts"][j][0] < -1000 || results["pts"][j][1] > 1000 || results["pts"][j][1] < -1000) {
+                    alert("System of differential equations has become numerically unstable, due to last parameter change, and the solution might not make sense. Please change back the parameter, select one of the IDILI hypothesese, or start over."); break;
+                 };
+                }
+
                 return [resolve(results, 1), resolve(results, 2)];
             }
    </script>
@@ -259,8 +265,70 @@ button.accordion.is-open {
         document.getElementById(name + t).value = e.value;
         //updateData();
         delayedUpdateData_total();
+		document.getElementById('idiliScenarios').value = 'sc_custom';
         console.log(name, t);
     }
+
+  function variableThreshold(high, scale) {
+
+	const normalY = (x, mean, stdDev) => Math.exp((-0.5) * Math.pow((x - mean) / stdDev, 2));
+
+	function range(lBound, uBound) {return Array.from(new Array(uBound-lBound), (x, i) => i + lBound);}
+
+
+	const getMean = (lowerBound, upperBound) => (upperBound + lowerBound) / 2;
+
+	// distance between mean and each bound of a 95% confidence interval
+	// is 2 stdDeviation, so distance between the bounds is 4
+	const getStdDeviation = (lowerBound, upperBound) => (upperBound - lowerBound) / 4;
+
+
+	const generatePoints = (lowerBound, upperBound) => {
+	  let stdDev = getStdDeviation(lowerBound, upperBound);
+	  let min = lowerBound - 2 * stdDev;
+	  let max = upperBound + 2 * stdDev;
+	  let unit = max - min / 100;
+	  return range(min, max, unit);
+	}
+
+
+	 
+
+	const generateBellCurve = (upperBound, randomScale, constantScale, parameterScale) => {
+		let lowerBound = 0;
+		let mean = getMean(lowerBound, upperBound);
+		let stdDev = getStdDeviation(lowerBound, upperBound);
+		let points = generatePoints(lowerBound, upperBound);
+
+		let seriesData = points.map(x => ({ x, y: normalY(x, mean, stdDev)}));
+
+
+
+		return seriesData.map(p => ({y: -randomScale*constantScale*parameterScale*p['y']}))
+	}
+
+	let d = [];
+	for (i=0; i<noPoints; i++) {
+		d[i] = high;
+	}
+
+
+	function addBellCurve(curve, start, width, high, baseDepth, scaleDepth) {
+		let bc = generateBellCurve(width/2, baseDepth, high*0.1, scaleDepth);
+		for (j=start; j<start+width; j++) {
+			d[j] = d[j] + bc[j-start]['y'];
+		}
+	}
+
+	addBellCurve(d, 10, 40, high, 0.9, scale);
+	addBellCurve(d, 70, 16, high, 1.3, scale);
+	addBellCurve(d, 120, 60, high, 1.9, scale);
+	addBellCurve(d, 200, 44, high, 2.5, scale);
+	addBellCurve(d, 270, 30, high, 0.9, scale);
+	addBellCurve(d, 320, 40, high, 0.9, scale);
+
+	return d;
+  }
     
   function imm_injury(t, h, l, t0, t1) {
      if (t<=t0) {
@@ -275,11 +343,25 @@ button.accordion.is-open {
   function regular(t, h, l, t0, t1) {
   	return h;
   }
+
+  function var_curve(t, h, l, t0, t1) {
+      return variableThreshold(parseFloat(h), parseFloat(l))[parseInt(t/step)];
+  }
+
+  function adapted_curve(t, h, l, t0, t1) {
+		let t_onset = 25;
+		if (t<t_onset) {
+			return h;
+		} else {
+			return parseFloat(h)+30*(t-t_onset)/(4+t-t_onset);
+		}
+  }
+
   
   var curve_f = regular;
   
   function changeCurve(name) {
-  	if (name == "regular") {
+  	if (name == "regular" || name=="branching") {
 		document.getElementById('lowNumber').style.visibility = 'hidden';
 		document.getElementById('lowRange').style.visibility = 'hidden';
         document.getElementById('t0Number').style.visibility = 'hidden';
@@ -289,7 +371,22 @@ button.accordion.is-open {
         document.getElementById('lowLabel').style.visibility = 'hidden';
         document.getElementById('t0Container').style.visibility = 'hidden';
         document.getElementById('t1Container').style.visibility = 'hidden';
-        
+ 
+        document.getElementById('lowLabel').innerHTML = 'value at time=t2:'; 
+   
+		document.getElementById('lowNumber').setAttribute('min', 0);
+		document.getElementById('lowNumber').setAttribute('max', 180);
+		document.getElementById('lowNumber').setAttribute('step', 70);
+		document.getElementById('lowNumber').setAttribute('value', 1);
+		document.getElementById('lowNumber').value = 70;
+
+		document.getElementById('lowRange').setAttribute('min', 0);
+		document.getElementById('lowRange').setAttribute('max', 180);
+		document.getElementById('lowRange').setAttribute('step', 70);
+		document.getElementById('lowRange').setAttribute('value', 1);
+		document.getElementById('lowRange').value = 70;
+
+       
         curve_f = regular;
         updateData();
         delayedUpdateData_total();
@@ -303,11 +400,58 @@ button.accordion.is-open {
         document.getElementById('lowLabel').style.visibility = 'visible';
         document.getElementById('t0Container').style.visibility = 'visible';
         document.getElementById('t1Container').style.visibility = 'visible';
-        
+ 
+        document.getElementById('lowLabel').innerHTML = 'value at time=t2:'; 
+   
+		document.getElementById('lowNumber').setAttribute('min', 0);
+		document.getElementById('lowNumber').setAttribute('max', 180);
+		document.getElementById('lowNumber').setAttribute('step', 70);
+		document.getElementById('lowNumber').setAttribute('value', 1);
+		document.getElementById('lowNumber').value = 70;
+
+		document.getElementById('lowRange').setAttribute('min', 0);
+		document.getElementById('lowRange').setAttribute('max', 180);
+		document.getElementById('lowRange').setAttribute('step', 70);
+		document.getElementById('lowRange').setAttribute('value', 1);
+		document.getElementById('lowRange').value = 70;
+
+
+     
         curve_f = imm_injury;
 		updateData();
 		delayedUpdateData_total();
+    } else if (name == 'variable') {
+		document.getElementById('lowNumber').style.visibility = 'visible';
+		document.getElementById('lowRange').style.visibility = 'visible';
+        document.getElementById('t0Number').style.visibility = 'hidden';
+        document.getElementById('t0Range').style.visibility = 'hidden';
+        document.getElementById('t1Number').style.visibility = 'hidden';
+        document.getElementById('t1Range').style.visibility = 'hidden';
+        document.getElementById('lowLabel').style.visibility = 'visible';
+        document.getElementById('t0Container').style.visibility = 'hidden';
+        document.getElementById('t1Container').style.visibility = 'hidden';
+        
+        document.getElementById('lowLabel').innerHTML = 'scale:'; 
+
+
+		document.getElementById('lowNumber').setAttribute('min', 1);
+		document.getElementById('lowNumber').setAttribute('max', 4);
+		document.getElementById('lowNumber').setAttribute('step', 0.05);
+		document.getElementById('lowNumber').setAttribute('value', 1);
+		document.getElementById('lowNumber').value = 1;
+
+		document.getElementById('lowRange').setAttribute('min', 1);
+		document.getElementById('lowRange').setAttribute('max', 4);
+		document.getElementById('lowRange').setAttribute('step', 0.05);
+		document.getElementById('lowRange').setAttribute('value', 1);
+		document.getElementById('lowRange').value = 1;
+
+
+        curve_f = var_curve;
+		updateData();
+		delayedUpdateData_total();
     }
+
   }
   
 
@@ -323,7 +467,7 @@ button.accordion.is-open {
     }
     
  
-  var curve_f_met = imm_injury;
+  var curve_f_met = regular;
   
   function changeCurve_met(name) {
   	if (name == "regular") {
@@ -354,7 +498,38 @@ button.accordion.is-open {
         curve_f_met = imm_injury;
     	updateData_met();
         delayedUpdateData_total();
-    }
+    } else if (name  == 'variable'){
+		document.getElementById('lowNumber-met').style.visibility = 'visible';
+		document.getElementById('lowRange-met').style.visibility = 'visible';
+        document.getElementById('t0Number-met').style.visibility = 'hidden';
+        document.getElementById('t0Range-met').style.visibility = 'hidden';
+        document.getElementById('t1Number-met').style.visibility = 'hidden';
+        document.getElementById('t1Range-met').style.visibility = 'hidden';
+        document.getElementById('lowLabel-met').style.visibility = 'visible';
+        document.getElementById('t0Container-met').style.visibility = 'hidden';
+        document.getElementById('t1Container-met').style.visibility = 'hidden';
+        
+        document.getElementById('lowLabel-met').innerHTML = 'scale:'; 
+
+
+		document.getElementById('lowNumber-met').setAttribute('min', 1);
+		document.getElementById('lowNumber-met').setAttribute('max', 4);
+		document.getElementById('lowNumber-met').setAttribute('step', 0.05);
+		document.getElementById('lowNumber-met').setAttribute('value', 1);
+		document.getElementById('lowNumber-met').value = 1;
+
+		document.getElementById('lowRange-met').setAttribute('min', 1);
+		document.getElementById('lowRange-met').setAttribute('max', 4);
+		document.getElementById('lowRange-met').setAttribute('step', 0.05);
+		document.getElementById('lowRange-met').setAttribute('value', 1);
+		document.getElementById('lowRange-met').value = 1;
+
+
+        curve_f_met = var_curve;
+		updateData_met();
+		delayedUpdateData_total();
+ 
+	}
   }
   
   function changeScenario(name) {
@@ -379,6 +554,7 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
+		document.getElementById('curveType').value = 'regular';    
         changeCurve("regular"); 
 
         updateData();
@@ -404,7 +580,7 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        //document.getElementById("curveType").value = "regular";
+		document.getElementById('curveType').value = 'regular'; 
         changeCurve("regular"); 
 
        
@@ -431,7 +607,7 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        //document.getElementById("curveType").value = "regular";
+        document.getElementById("curveType").value = "regular";
 		changeCurve("regular"); 
 
 
@@ -475,9 +651,8 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        //document.getElementById("curveType").value = "regular";
-        
-        //document.getElementById("curveType-met").value = "regular";
+        document.getElementById("curveType").value = "regular";
+        document.getElementById("curveType-met").value = "regular";
         changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
@@ -523,9 +698,9 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        //document.getElementById("curveType").value = "regular";
+        document.getElementById("curveType").value = "regular";
         
-        //document.getElementById("curveType-met").value = "regular";
+        document.getElementById("curveType-met").value = "regular";
         changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
@@ -561,9 +736,9 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
 
-        //document.getElementById("curveType").value = "regular";
+        document.getElementById("curveType").value = "regular";
         
-        //document.getElementById("curveType-met").value = "regular";
+        document.getElementById("curveType-met").value = "regular";
         changeCurve("regular"); 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
@@ -599,9 +774,9 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 94;
         document.getElementById("highRange").value = 94;
 
-        //document.getElementById("curveType").value = "regular";
+        document.getElementById("curveType").value = "regular";
         
-        //document.getElementById("curveType-met").value = "regular";
+        document.getElementById("curveType-met").value = "regular";
 
         changeCurve("regular"); 
         changeCurve_met('regular');
@@ -612,7 +787,34 @@ button.accordion.is-open {
         updateData();
         updateData_met();
         updateData_total();
-    } else if (name=="sc_immune_injury") {
+    } else if (name=="sc_variable_tox_threshold") {
+        document.getElementById("kaNumber").value = 1;
+        document.getElementById("kaRange").value = 1;
+
+        document.getElementById("keNumber").value = 0.1;
+        document.getElementById("keRange").value = 0.1;
+        
+        document.getElementById("keChange").checked = false;
+
+
+        document.getElementById("FNumber").value = 1;
+        document.getElementById("FRange").value = 1;
+
+        document.getElementById("VdNumber").value = 1;
+        document.getElementById("VdRange").value = 1;
+
+        document.getElementById("showMetabolite").checked = false;
+ 
+        document.getElementById("highNumber").value = 144;
+        document.getElementById("highRange").value = 144;
+
+		document.getElementById('curveType').value = 'variable';
+        changeCurve("variable"); 
+
+        updateData();
+        updateData_total();
+ 
+	}else if (name=="sc_immune_injury") {
         document.getElementById("kaNumber").value = 1;
         document.getElementById("kaRange").value = 1;
 
@@ -636,6 +838,7 @@ button.accordion.is-open {
         document.getElementById("showMetabolite").checked = false;
         
 
+		document.getElementById('curveType').value='imm_injury';
         changeCurve('imm_injury');
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
@@ -653,7 +856,7 @@ button.accordion.is-open {
         //document.getElementById("curveType").value = "regular";
         
 
-        //document.getElementById("curveType-met").value = "regular";
+        document.getElementById("curveType-met").value = "regular";
 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
@@ -687,6 +890,7 @@ button.accordion.is-open {
         document.getElementById("showMetabolite").checked = false;
         
 
+		document.getElementById('curveType').value = 'imm_injury';
         changeCurve('imm_injury');
         document.getElementById("highNumber").value = 144;
         document.getElementById("highRange").value = 144;
@@ -701,10 +905,9 @@ button.accordion.is-open {
         document.getElementById("t1Range").value = 80;
 
 
-        //document.getElementById("curveType").value = "regular";
         
 
-        //document.getElementById("curveType-met").value = "regular";
+        document.getElementById("curveType-met").value = "regular";
 
         changeCurve_met('regular');
         document.getElementById("highNumber-met").value = 20;
@@ -714,15 +917,42 @@ button.accordion.is-open {
         updateData();
         updateData_met();
         updateData_total();
-    } else {
-        alert('not implemented yet');
+    } else if (name=="sc_failure_adapt"){
+        document.getElementById("kaNumber").value = 2;
+        document.getElementById("kaRange").value = 2;
+
+        document.getElementById("keNumber").value = 0.1;
+        document.getElementById("keRange").value = 0.1;
+        
+        document.getElementById("keChange").checked = false;
+
+
+        document.getElementById("FNumber").value = 1;
+        document.getElementById("FRange").value = 1;
+
+        document.getElementById("VdNumber").value = 1;
+        document.getElementById("VdRange").value = 1;
+
+        document.getElementById("showMetabolite").checked = false;
+ 
+        document.getElementById("highNumber").value = 105;
+        document.getElementById("highRange").value = 105;
+
+		document.getElementById('curveType').value = 'branching';    
+        changeCurve("branching"); 
+
+        updateData();
+        updateData_total();
+ 
+	} else if (name=="custom") {
+		// noop
     }
  
  
   }
 </script>
 <div class="container">
-  <h1>DemoTox-PK</h1>
+    <h1>DemoTox-PK <a href="about.html" style="font-size: 16px;">documentation</a></h1>
   
   <canvas id="totalChart"></canvas>
 
@@ -735,7 +965,7 @@ button.accordion.is-open {
   <div class="accordion-content">
     <p>
 	<form>
-    <label id="hypoLabel" style="float: left; width: 120px;">scenario: </label><select onchange="changeScenario(this.value);">
+    <label id="hypoLabel" style="float: left; width: 120px;">scenario: </label><select id="idiliScenarios" onchange="changeScenario(this.value);">
       <option value="sc_maintenance" selected>Therapeutic drug maintenance</option>
       <option value="sc_compromised_start" >Compromised drug kinetics at onset</option>
       <option value="sc_compromised_during" >Compromised drug kinetics during therapy</option>
@@ -788,7 +1018,7 @@ button.accordion.is-open {
 
     <br /><br /><hr />
     
-        <label id="labelShowMetabolite" style="float: left;">Show metabolite: </label><input type="checkbox" id="showMetabolite" name="showMetabolite" onclick="delayedUpdateData_total();toggleMetaboliteBoxes();" />
+        <label id="labelShowMetabolite" style="float: left;">Metabolism: </label><input type="checkbox" id="showMetabolite" name="showMetabolite" onclick="delayedUpdateData_total();toggleMetaboliteBoxes();" />
         <br/><br/>
     
         <label id="vmaxLabel" style="float: left; width: 90px;">Vmax: </label><input id="vmaxRange" type="range" name="amountRange" min="50" max="150" value="100" step="10" oninput="set('vmax', this, 'Number');" disabled/>
@@ -823,6 +1053,9 @@ button.accordion.is-open {
     <select id="curveType" onchange="changeCurve(this.value);">
       <option value="regular" selected>constant threshold</option>
       <option value="imm_injury">change in threshold</option>
+      <option value="variable">variable threshold</option>
+      <option value="branching">branching threshold</option>
+ 
     </select><br /><br />
     
 		<label id="highLabel" style="float: left; width: 150px;">value at time=0: </label>
@@ -880,6 +1113,7 @@ button.accordion.is-open {
 	<select id="curveType-met" onchange="changeCurve_met(this.value);">
       <option value="regular" selected>constant threshold</option>
       <option value="imm_injury">change in threshold</option>
+      <option value="variable">variable threshold</option> 
     </select><br /><br />
     
 		<label id="highLabel-met" style="float: left; width: 150px;">value at time=0: </label><input id="highRange-met" type="range" name="amountRange" min="0" max="180" value="30" step="1" oninput="set_met('high', this, 'Number');" />
@@ -923,7 +1157,16 @@ button.accordion.is-open {
 
     </p>
   </div>
+  <button class="accordion">Contact and citation information</button>
+  <div class="accordion-content">
+    <p>This work has been submitted for publication and the citation information will appear below once available.</p>
+    <p>For questions about the DemoTox-Pk software contact</p>
+    <p style="padding-left:30px;">David Filipovic &lt;<a href="mailto:filipov4@msu.edu">filipov4@msu.edu</a>&gt; <br/> Omar Kana &lt;<a href="mailto:kanaomar@msu.edu">kanaomar@msu.edu</a>&gt;</p>
+    <p>For questions about IDILI or IDILI hypotheses contact</p>
+    <p style="padding-left:30px;">Robert Roth &lt;<a href="mailto:rothr@msu.edu">rothr@msu.edu</a>&gt; <br/> Patricia Ganey &lt;<a href="mailto:ganey@msu.edu">ganey@msu.edu</a>&gt;</p>
   </div>
+  </div>
+
 </div>
   <script>
     noPoints = 400;
@@ -945,6 +1188,26 @@ button.accordion.is-open {
 
       for (var i=0; i < noPoints; i++) {
         data.push( curve_f(i*step, h, l, t0, t1) );
+      }
+      return [labels, data]
+    }
+ 
+  	function makeDataBranching() {
+      var labels = [];
+      var data = [];
+
+      for (var i=0; i < noPoints; i++) {
+          labels.push(i*step);
+      }
+
+
+      var h = document.getElementById('highNumber').value;
+      var l = document.getElementById('lowNumber').value;
+      var t0 = document.getElementById('t0Number').value;
+      var t1 = document.getElementById('t1Number').value;
+
+      for (var i=0; i < noPoints; i++) {
+        data.push( adapted_curve(i*step, h, l, t0, t1) );
       }
       return [labels, data]
     }
@@ -1097,6 +1360,7 @@ button.accordion.is-open {
 
     	var data = makeData();
         var data_met = makeData_met();
+		var data_branch = makeDataBranching();
         
         myChart_total.data.datasets[0].data = data[1];
         if (document.getElementById('showMetabolite').checked) {
@@ -1107,6 +1371,17 @@ button.accordion.is-open {
             myChart_total.data.datasets[1].data = []; 
             myChart_total.data.datasets[3].data = [];
         }
+		if (document.getElementById('curveType').value == 'branching') {
+			if (myChart_total.data.datasets.length == 4) {	
+				myChart_total.data.datasets[4] = {label: 'adapted toxicity threshold', data: [], borderColor: '#00FF00', backgroundColor: '#00FF00', borderDash: [5,2]};
+			}
+			myChart_total.data.datasets[4].data = data_branch[1];
+		} else {
+			if (myChart_total.data.datasets.length == 5) {
+				myChart_total.data.datasets.pop();
+			}
+		}
+
         myChart_total.data.datasets[2].data = solve()[0];
         
         myChart_total.update();
@@ -1138,7 +1413,11 @@ button.accordion.is-open {
                         },
                         //usePointStyle: true,
                         //pointStyle: 'cirle',
-                        boxHeight: 2
+                        boxHeight: 2,
+		                filter: function(item, chart) {
+        		            // Logic to remove a particular legend item goes here
+                		    return !item.text.includes('adapted');
+						}
      
                 },
 				align: 'end',
