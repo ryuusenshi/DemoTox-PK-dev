@@ -1,0 +1,111 @@
+<html>
+    <head></head>
+    <body>
+        <h1>DemoTox-PK:  Introduction and Documentation <a href="index.html" style="font-size: 16px">return to tool</a></h1>
+
+
+
+<h2>What is DemoTox-PK?</h2>
+
+<p>At its core, DemoTox-PK is a browser implementation of a minimal, two-compartment pharmacokinetic model. DemoTox-PK enables users to</p>
+
+<ol>
+<li><p>visualize the pharmacokinetics of a repeated drug dosing regimen (i.e., maintenance drug therapy) and to investigate how changing various pharmacokinetic parameters affects the plasma concentration of a hypothetical drug with time and</p></li>
+<li><p>visualize the interplay with toxicodynamics of the drug, as represented by toxicity thresholds. It is meant to be used as an educational tool to illustrate how the interplay between pharmacokinetics and toxicodynamics can affect drug toxicity and its time of onset.</p></li> 
+</ol>
+
+<h2>What is Maintenance Drug Therapy?</h2>
+
+<p>Often, drugs are administered in situations that require sustained drug action over a prolonged period—ie, weeks to years.  This is typically accomplished by administering the drug regularly at an effective and safe dose, ie, the same dose (Da) given at the same time between administrations (ie, “dosing interval” or “dosing period” (Td).  If elimination of the drug occurs by first-order kinetics, this constant dosing regimen will establish a plasma drug concentration that is constant over time (ie, a plateau or steady state), produces a sustained therapeutic effect and below the plasma concentration at which toxicity occurs (ie, the toxicity threshold).  Figure here??? The establishment of a plateau drug concentration and the effect of Da and Td on the plateau can be visualized using DemoTox-PK.</p> 
+
+<p>Importantly, most adverse drug reactions happen during maintenance drug therapy.  From a pharmacokinetic (PK) perspective, toxicity occurs when either (1) the plasma concentration rises above a safe level (ie, exceeds the toxicity threshold) or (2) the toxicity threshold changes so that it intersects with the plasma concentration.</p>
+
+
+
+<h2>Model Structure</h2>
+
+<p>The model used by DemoTox-PK is a minimal, two compartment model illustrated below. It consists of repeated administration of a bolus dose (Da) of a drug regular time intervals (Tds) into a compartment from which the drug is absorbed and a central compartment where the drug concentration (Cd) and the drug metabolite concentration (Cm) are tracked.  Absorption is modeled as first-order process with a rate constant Ka. The drug bioavailability (percent of the administered dose that is absorbed) is F, and the volume of distribution is Vd. The drug can be eliminated (e.g., by renal excretion) via a first order process with a rate constant Ke1 as well as metabolized according to Michaelis-Menten kinetics with a maximum reaction velocity (Vmax) and Michaelis constant (Km). The drug metabolite is eliminated via a first order process with a rate constant Ke2.</p>
+
+ 
+
+
+
+<h2>Elements of DemoTox-PK</h2>
+
+
+<p>DemoTox-PK is composed of three main elements</p>
+<ol>
+<li><p>The pharmacokinetic graph</p></li>
+<li><p>Model parameters</p></li>
+<li><p>Toxicity thresholds</p></li>
+
+<h3>Pharmacokinetic Graph</h3>
+
+<p>The pharmacokinetic graph is located at the top of the screen and displays the concentrations of both the parent drug (black line) and its metabolite (purple line) vs. time, as well as the toxicity thresholds of the parent drug (red dashed line) and its metabolite (blue dashed line). The x axis of the graph represents time. Since time is represented in arbitrary units, labels are omitted from the graph to avoid confusion. The y axis represents drug and metabolite concentrations in arbitrary units.</p>
+
+
+<h3>Model Parameters</h3>
+<p>The Model Parameters section of DemoTox-PK is located immediately below the pharmacokinetic graph. It contains all of the model parameters described in the Model Structure section. Each parameter has a limited range of values that can be chosen by the user, and each parameter value can be changed either via a slider or direct entry. The changes in parameter values are immediately reflected in the drug- and metabolite time-concentration profiles on the pharmacokinetic graph. By changing the parameters, the user can observe their influence on the pharmacokinetics of the parent drug and/or its metabolite. The drug metabolite parameters reflecting Michaelis-Menten metabolism and the first order elimination of the metabolite can be found in the Metabolite section. The parameters of the model that can be changed are:<p>
+
+<ul>
+<li><p><b>Ka</b> – first order rate constant for absorption of parent drug (fraction of drug absorbed per unit of time)</p></li>
+<li><p><b>ke1</b> – first order rate constant for elimination of parent drug (fraction of drug eliminated per unit time)</p></li>
+<li><p><b>F</b> – bioavailability of the parent drug </p></li>
+      (fraction of drug administered that is absorbed)</p></li>
+<li><p><b>Vd</b> – volume of distribution of parent drug</p></li>
+<li><p><b>Dose</b> – dose of parent drug</p></li>
+<li><p><b>Td</b> – dosing interval of parent drug (time between two successive administrations)</p></li>
+<li><p><b>Vmax</b> – maximum rate of drug metabolism</p></li>
+<li><p><b>Km</b> – Michaelis constant</p></li>
+<li><p><b>ke2</b> – first order rate constant for elimination of the metabolite (fraction eliminated per unit of time)</p></li>
+</ul>
+
+<p><b>Warning:</b> certain parameter choices can lead to numerical instability of the underlying differential equation system and can produce invalid solutions and unreasonable results. DemoTox-PK attempts to recognize where such numerical instability occurs and will notify the user.</p>
+
+
+<h3>Toxicity Thresholds</h3>
+<p>There are two Toxicity Threshold sections of DemoTox-PK, one for the parent drug and one for its metabolite, and they are located below the Model Parameters section. Toxicity threshold is defined as the plasma concentration above which toxicity occurs. There are four types of toxicity thresholds implemented in DemoTox-PK.</p>
+
+<ol>
+<li><p>Constant threshold</p>
+<p>Toxicity threshold does not change with time. User can select the value of the toxicity threshold at time=0.</p></li>
+
+<li><p>Change in threshold</p>
+<p>Toxicity threshold changes linearly once. This type of threshold can be imagined as two constant thresholds that are connected with a straight line. “Value at time=0” represents the initial value of the threshold, “time=t1” is the time when the threshold begins to change, “time=t2” is the time when the threshold reaches the value given in “value at time=t2.”</p></li>
+
+<li><p>Variable threshold</p>
+<p>Toxicity threshold experiences random dips over time. The magnitude of these dips can be controlled with the “magnitude” parameter. This type of threshold represents a toxicity threshold that is influenced by a changing environment or internal factors.</p></li>
+
+<li><p>Branching threshold</p>
+<p>Toxicity threshold branches into two toxicity thresholds to demonstrate adaptation to toxic stress vs failure to adapt.</p></li>
+</ol>
+
+<h2>Using DemoTox-PK to Illustrate Hypotheses for Mode-of-Action of Idiosyncratic, Drug-induced Liver Injury</h2>
+
+<p>Adverse drug reactions (ADRs) remain an important contributor to mortality and morbidity, and the liver is a major target of these reactions.  Drug-induced liver injury (DILI) is an important cause of failure in clinical trials and a major reason for issuing warnings or withdrawal of drugs from the market (Kaplowitz, 2005, PMID: 15931258).  Drug toxicity has been characterized as either intrinsic or idiosyncratic.  Idiosyncratic DILI (IDILI) is best defined as a hepatotoxic reaction to a drug that occurs in a (typically small) minority of patients during drug therapy (Roth and Ganey, 2011, PMID: 21726137).  The reactions are typically rare and delayed in onset from a few days to several months after onset of drug therapy.</p> 
+
+
+<p>The main purpose of DemoTox-PK is to illustrate scenarios in which the interplay between pharmacokinetics (drug/metabolite concentration) and toxicodynamics (toxicity threshold) can lead to unwanted or unforeseen outcomes. The tool can be used to visualize onset of toxicity applicable to numerous mechanisms of injury and various target organs.  One such use case is the illustration of various hypotheses underlying idiosyncratic, drug induced liver injury (IDILI). Clicking on the arrow in the IDILI Hypotheses section reveals a pull-down list of scenarios related to various hypotheses regarding IDILI pathogenesis (see below).  Each choice invokes parameter settings that change the graph to illustrate the maintenance dosing PK curve and toxicity threshold associated with a particular hypothesis.</p>
+
+<p>Idiosyncratic reactions obviously depend on (1) the characteristics of the offending drug and (2) characteristics of the individual.  The mode of action of most IDILI reactions remains poorly understood, and numerous hypotheses have arisen to explain how they originate (see diagram).  These hypotheses can be framed in the context of pharmacokinetic scenarios that include the following:</p>
+<ul>
+<li><p> Steady state drug concentration in plasma rises above the toxicity threshold (eg, when a genetic mutation leads to reduced drug elimination).</p></li>
+<li><p> Production of toxic metabolite(s) is elevated (eg, when enhanced expression of drug metabolizing enzymes leads to greater production of a toxic metabolite).</p></li>
+
+<li><p>Transition to zero-order kinetics occurs (eg, during drug overdose).</p></li>
+
+<li><p> Genetic sensitivity factors reduce the threshold for toxicity (eg, deficiency in a cytoprotective mechanism).</p></li>
+
+<li><p> Drug causes a progressive decrease in toxicity threshold (eg, drug causes slow, continuous injury to mitochondria.</p></li>
+
+<li><p> Environmental changes result in a threshold for toxicity that varies with time (eg, inflammatory episodes render liver more sensitive)</p></li>
+
+<li><p> Drug exposure activates a damaging adaptive immune response, qualitatively changing the toxicity threshold (eg, a reactive metabolite acts as a hapten, activating tissue-damaging lymphocytes).</p></li>
+
+<li><p> Patient fails to adapt to modest, drug-induced injury, thereby maintaining suprathreshold plasma concentration.</p></li>
+
+</ul>
+
+<p>Each of these hypotheses involves an alteration in drug/metabolite pharmacokinetics or toxicodynamics within the affected individual.  Toxicodynamics encompasses modes of action such as activation of intracellular cell death pathways, alteration in protective cellular signaling, etc., and is reflected in the threshold for toxicity.  DemoTox-PK illustrates the pharmacokinetic and toxicodynamic (I.e., toxicity threshold) changes associated with the various hypotheses of IDILI pathogenesis listed above. It is meant as an educational tool for toxicology, allowing the user to explore preset pharmacokinetic and toxicodynamic scenarios of IDILI and to illustrate graphically how altering pharmacokinetics and toxicity threshold can lead to toxicity and influence its onset during maintenance drug therapy.</p>
+    </body>
+</html>
