@@ -367,7 +367,7 @@ button.accordion.is-open {
   var curve_f = regular;
   
   function changeCurve(name) {
-  	if (name == "regular" || name=="branching") {
+  	if (name == "regular" || name=="adaptation") {
 		document.getElementById('lowNumber').style.visibility = 'hidden';
 		document.getElementById('lowRange').style.visibility = 'hidden';
         document.getElementById('t0Number').style.visibility = 'hidden';
@@ -980,8 +980,8 @@ button.accordion.is-open {
         document.getElementById("highNumber").value = 105;
         document.getElementById("highRange").value = 105;
 
-		document.getElementById('curveType').value = 'branching';    
-        changeCurve("branching"); 
+		document.getElementById('curveType').value = 'adaptation';    
+        changeCurve("adaptation"); 
 
         updateData();
         updateData_total();
@@ -1135,7 +1135,7 @@ button.accordion.is-open {
       <option value="regular" selected>constant threshold</option>
       <option value="imm_injury">change in threshold</option>
       <option value="variable">variable threshold</option>
-      <option value="branching">branching threshold</option>
+      <option value="adaptation">adaptation threshold</option>
  
     </select><br /><br />
     
@@ -1273,7 +1273,7 @@ button.accordion.is-open {
       return [labels, data]
     }
  
-  	function makeDataBranching() {
+  	function makeDataAdaptation() {
       var labels = [];
       var data = [];
 
@@ -1479,7 +1479,7 @@ button.accordion.is-open {
     	var data = makeData();
         var data_met = makeData_met();
         var data_eff = makeData_eff();
-		var data_branch = makeDataBranching();
+		var data_branch = makeDataAdaptation();
         
         myChart_total.data.datasets[0].data = data[1];
         if (document.getElementById('showMetabolite').checked) {
@@ -1500,7 +1500,7 @@ button.accordion.is-open {
         }
         
         
-		if (document.getElementById('curveType').value == 'branching') {
+		if (document.getElementById('curveType').value == 'adaptation') {
 			if (myChart_total.data.datasets.length == 5) {	
 				myChart_total.data.datasets[5] = {label: 'adapted toxicity threshold', data: [], borderColor: '#00FF00', backgroundColor: '#00FF00', borderDash: [5,2]};
 			}
