@@ -1471,9 +1471,9 @@ button.accordion.is-open {
         F = document.getElementById('FNumber').valueAsNumber;
         Vd = document.getElementById('VdNumber').valueAsNumber;
         
-        Vmax = document.getElementById('vmaxNumber').value;
+        Vmax = document.getElementById('vmaxNumber').valueAsNumber;
         km = document.getElementById('kmNumber').valueAsNumber;
-        ke_m = document.getElementById('ke_metNumber').value;
+        ke_m = document.getElementById('ke_metNumber').valueAsNumber;
          
      
        // ke = function(t) {return document.getElementById('keNumber').value;}
@@ -1497,7 +1497,6 @@ button.accordion.is-open {
         if (document.getElementById('showEfficacy').checked) {
             myChart_total.data.datasets[4].data = data_eff[1];
         } else {
-            Vmax = 0;
             myChart_total.data.datasets[4].data = []; 
         }
         
