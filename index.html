@@ -72,6 +72,8 @@
    }
 }
 
+@page { size: auto;  margin-top: 0mm; margin-bottom: 0mm; }
+
 /* begin tooltip */
 .help-tip{
     position: absolute;
@@ -994,9 +996,9 @@ button.accordion.is-open {
   }
 </script>
 <div class="container">
-    <h1>DemoTox-PK <a href="about.html" style="font-size: 16px;">documentation</a></h1>
+    <h1>DemoTox-PK <a class="noprint" href="about.html" style="font-size: 16px;">documentation</a></h1>
   
-  <button onclick="window.print();">Print</button>
+  <button class="noprint" onclick="window.print();">Print</button>
   
   <canvas id="totalChart"></canvas>
 
