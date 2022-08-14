@@ -547,6 +547,14 @@ button.accordion.is-open {
     
   }
   
+  function setChangeCheckbox(parameter, value) {
+        let el = document.getElementById(parameter + "Change");
+        
+        el.checked = value;
+        toggleChangeFieldset(el);
+  }
+  
+  
   function changeScenario(name) {
     setDefautDoseTd();
   
@@ -557,7 +565,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
         
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
 
         document.getElementById("FNumber").value = 1;
@@ -583,7 +592,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.07;
         document.getElementById("keRange").value = 0.07;
 
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
 
         document.getElementById("FNumber").value = 1;
@@ -610,7 +620,14 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
 
-        document.getElementById("keChange").checked = true;
+        //document.getElementById("keChange").checked = true;
+        document.getElementById("keChangeTimeNumber").value = 40;
+        document.getElementById("keChangeTimeRange").value = 40;
+        document.getElementById("keChangeValueNumber").value = 0.05;
+        document.getElementById("keChangeValueRange").value = 0.05;
+
+        setChangeCheckbox("ke", true)
+
 
 
         document.getElementById("FNumber").value = 1;
@@ -638,7 +655,9 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
 
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
+
 
         document.getElementById("FNumber").value = 1;
         document.getElementById("FRange").value = 1;
@@ -687,8 +706,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
 
-        document.getElementById("keChange").checked = false;
-       //document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
 
         document.getElementById("FNumber").value = 1;
@@ -734,7 +753,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0;
         document.getElementById("keRange").value = 0;
 
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
         document.getElementById("ke_metNumber").value = 0.15;
         document.getElementById("ke_metRange").value = 0.15;
@@ -772,7 +792,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
 
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
         document.getElementById("ke_metNumber").value = 0.15;
         document.getElementById("ke_metRange").value = 0.15;
@@ -811,7 +832,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
         
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
 
         document.getElementById("FNumber").value = 1;
@@ -838,7 +860,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
 
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
         document.getElementById("ke_metNumber").value = 0.15;
         document.getElementById("ke_metRange").value = 0.15;
@@ -890,7 +913,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
 
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
         document.getElementById("ke_metNumber").value = 0.15;
         document.getElementById("ke_metRange").value = 0.15;
@@ -941,7 +965,8 @@ button.accordion.is-open {
         document.getElementById("keNumber").value = 0.1;
         document.getElementById("keRange").value = 0.1;
         
-        document.getElementById("keChange").checked = false;
+        //document.getElementById("keChange").checked = false;
+        setChangeCheckbox("ke", false)
 
 
         document.getElementById("FNumber").value = 1;
@@ -1028,11 +1053,22 @@ button.accordion.is-open {
 		<input id="kaNumber" type="number" name="amountInput" min="0" max="3" value="1" step="0.1" oninput="set('ka', this, 'Range');" />
     <br />
 
-		<label id="keLabel" style="float: left; width: 90px;">ke1: </label><input id="keRange" type="range" name="amountRange" min="0" max="1" value="0.1" step="0.02" oninput="set('ke', this, 'Number');" />
-		<input id="keNumber" type="number" name="amountInput" min="0" max="1" value="0.1" step="0.02" oninput="set('ke', this, 'Range');" />
+		<label id="keLabel" style="float: left; width: 90px;">ke1: </label><input id="keRange" type="range" name="amountRange" min="0" max="1" value="0.1" step="0.01" oninput="set('ke', this, 'Number');" />
+		<input id="keNumber" type="number" name="amountInput" min="0" max="1" value="0.1" step="0.01" oninput="set('ke', this, 'Range');" />
         <label id"keChangeLabel">change: </label>
         <input id="keChange" type="checkbox" onclick="changeKe(this);" />
     <br />
+        
+    <fieldset id="keChangeFieldset" disabled>
+        <label id="keChangeTimeLabel" style="float: left; width: 90px;">at time</label><input id="keChangeTimeRange" type="range" name="amountRange" min="0" max="80" value="40" step="1" oninput="set('keChangeTime', this, 'Number');" />
+		<input id="keChangeTimeNumber" type="number" name="amountInput" min="0" max="80" value="40" step="1" oninput="set('keChangeTime', this, 'Range');" />
+    <br />
+
+		<label id="keChangeValueLabel" style="float: left; width: 90px;">value</label><input id="keChangeValueRange" type="range" name="amountRange" min="0" max="1" value="0.05" step="0.01" oninput="set('keChangeValue', this, 'Number');" />
+		<input id="keChangeValueNumber" type="number" name="amountInput" min="0" max="1" value="0.05" step="0.01" oninput="set('keChangeValue', this, 'Range');" />
+
+    <br />
+    </fieldset>
     
 		<label id="FLabel" style="float: left; width: 90px;">F: </label><input id="FRange" type="range" name="amountRange" min="0.05" max="1" value="1" step="0.05" oninput="set('F', this, 'Number');" />
 		<input id="FNumber" type="number" name="amountInput" min="0.05" max="1" value="1" step="0.05" oninput="set('F', this, 'Range');" />
@@ -1369,6 +1405,17 @@ button.accordion.is-open {
    <script>
     const ctx_total = document.getElementById('totalChart').getContext('2d');
     timeout_Total = 0;
+    
+    function toggleChangeFieldset(el) {        
+        let checked = el.checked;
+        let name = el.id.slice(0, el.id.length-6);
+        
+        if (checked) {
+            document.getElementById(name + 'ChangeFieldset').removeAttribute('disabled');
+        } else {
+            document.getElementById(name + 'ChangeFieldset').setAttribute('disabled', true);
+        }
+    }
 
     function toggleMetaboliteBoxes() {
         var showMet = document.getElementById('showMetabolite').checked;
@@ -1406,11 +1453,14 @@ button.accordion.is-open {
 
         ka = document.getElementById('kaNumber').value;
           if (el.checked) {
+              let tChange = document.getElementById('keChangeTimeNumber').valueAsNumber;
+              let valChange = document.getElementById('keChangeValueNumber').valueAsNumber;
+              
               ke = function(t) {
-                  if (t<40) {
+                  if (t<tChange) {
                       return document.getElementById('keNumber').value;
                   } else {
-                      return 0.01
+                      return valChange;
                   }
               }
           } else {
@@ -1607,7 +1657,8 @@ accordionBtns.forEach((accordion) => {
   changeCurve('regular');
   changeCurve_met('regular');
   function changeKe(el) {
-     delayedUpdateData_total();
+    toggleChangeFieldset(el);
+    delayedUpdateData_total(); 
   }
 </script>
 </body>
