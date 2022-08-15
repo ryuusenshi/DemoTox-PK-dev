@@ -30,7 +30,8 @@
 
             var V = function(t, pt) {
                 if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
-                    let doseNumber = Math.floor(t/Td) + 1;
+                    let doseNumber = Math.round(t/Td) + 1;
+
                     if (document.getElementById('dose' + doseNumber).checked) {
                         pt[0] = Dose;
                     } else {
@@ -1496,7 +1497,7 @@ button.accordion.is-open {
         Td = document.getElementById('TdNumber').valueAsNumber;
         
         for (i=1; i<27; i++) {
-            if (i<Math.floor(80/Td)) {
+            if (i < (Math.floor(80/Td) + 1)) {
                 document.getElementById('div-dose' + i).style.display = 'flex';
             } else {
                 document.getElementById('div-dose' + i).style.display = 'none';
