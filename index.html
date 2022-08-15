@@ -30,7 +30,12 @@
 
             var V = function(t, pt) {
                 if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
-                    pt[0] = Dose;
+                    let doseNumber = Math.floor(t/Td) + 1;
+                    if (document.getElementById('dose' + doseNumber).checked) {
+                        pt[0] = Dose;
+                    } else {
+                        pt[0] = 0;
+                    }
                 }
 
                 var Ca = pt[0], Cx= pt[1], Cm = pt[2];
@@ -65,7 +70,6 @@
    </script>
  
 <style>
-
 @media print {
    .noprint {
       visibility: hidden;
@@ -73,6 +77,13 @@
 }
 
 @page { size: auto;  margin-top: 0mm; margin-bottom: 0mm; }
+
+.contflex {
+  display: flex;
+}
+.contflex.space-around {
+  justify-content: space-around;
+}
 
 /* begin tooltip */
 .help-tip{
@@ -1046,6 +1057,38 @@ button.accordion.is-open {
 		<input id="doseNumber" type="number" name="amountInput" min="10" max="55" value="40" step="1" oninput="set('dose', this, 'Range');" />
     <br />
     
+    <fieldset id="doses">
+        <legend>Individual doses</legend>
+        <div class="contflex space-around">
+            <div id="div-dose1"><input type="checkbox" id="dose1" name="dose1" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose2"><input type="checkbox" id="dose2" name="dose2" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose3"><input type="checkbox" id="dose3" name="dose3" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose4"><input type="checkbox" id="dose4" name="dose4" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose5"><input type="checkbox" id="dose5" name="dose5" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose6"><input type="checkbox" id="dose6" name="dose6" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose7"><input type="checkbox" id="dose7" name="dose7" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose8"><input type="checkbox" id="dose8" name="dose8" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose9"><input type="checkbox" id="dose9" name="dose9" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose10"><input type="checkbox" id="dose10" name="dose10" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose11"><input type="checkbox" id="dose11" name="dose11" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose12"><input type="checkbox" id="dose12" name="dose12" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose13"><input type="checkbox" id="dose13" name="dose13" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose14"><input type="checkbox" id="dose14" name="dose14" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose15"><input type="checkbox" id="dose15" name="dose15" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose16"><input type="checkbox" id="dose16" name="dose16" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose17"><input type="checkbox" id="dose17" name="dose17" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose18"><input type="checkbox" id="dose18" name="dose18" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose19"><input type="checkbox" id="dose19" name="dose19" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose20"><input type="checkbox" id="dose20" name="dose20" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose21"><input type="checkbox" id="dose21" name="dose21" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose22"><input type="checkbox" id="dose22" name="dose22" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose23"><input type="checkbox" id="dose23" name="dose23" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose24"><input type="checkbox" id="dose24" name="dose24" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose25"><input type="checkbox" id="dose25" name="dose25" checked onclick="delayedUpdateData_total();"></div>
+            <div id="div-dose26"><input type="checkbox" id="dose26" name="dose26" checked onclick="delayedUpdateData_total();"></div>
+        </div>
+    </fieldset>
+    
         <label id="TdLabel" style="float: left; width: 90px;">Td: </label><input id="TdRange" type="range" name="amountRange" min="2" max="12" value="4" step="1" oninput="set('Td', this, 'Number');" />
 		<input id="TdNumber" type="number" name="amountInput" min="2" max="12" value="4" step="1" oninput="set('Td', this, 'Range');" />
     <br />
@@ -1452,6 +1495,13 @@ button.accordion.is-open {
         Dose = document.getElementById('doseNumber').valueAsNumber;
         Td = document.getElementById('TdNumber').valueAsNumber;
         
+        for (i=1; i<27; i++) {
+            if (i<Math.floor(80/Td)) {
+                document.getElementById('div-dose' + i).style.display = 'flex';
+            } else {
+                document.getElementById('div-dose' + i).style.display = 'none';
+            }
+        }
 
         ka = document.getElementById('kaNumber').value;
           if (el.checked) {
