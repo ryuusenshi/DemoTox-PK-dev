@@ -1054,8 +1054,16 @@ button.accordion.is-open {
   <div class="accordion-content">
     <p>
 	<form>
+        <label id="ymaxLabel" style="float: left; width: 90px;">y max: </label><input id="ymaxRange" type="range" name="amountRange" min="10" max="550" value="180" step="1" oninput="set('ymax', this, 'Number');" />
+        <input id="ymaxNumber" type="number" name="amountInput" min="10" max="550" value="180" step="1" oninput="set('ymax', this, 'Range');" />
+    <br />        
+    
+    
         <label id="doseLabel" style="float: left; width: 90px;">Dose: </label><input id="doseRange" type="range" name="amountRange" min="10" max="55" value="40" step="1" oninput="set('dose', this, 'Number');" />
 		<input id="doseNumber" type="number" name="amountInput" min="10" max="55" value="40" step="1" oninput="set('dose', this, 'Range');" />
+    <br />
+    
+    <label id="singleDoseLabel" style="float: left; width: 90px;">single dose? </label><div id="div-dose1"><input type="checkbox" id="singleDose" name="singleDose" onclick="setSingleDose();"></div>
     <br />
     
     <fieldset id="doses">
@@ -1489,9 +1497,26 @@ button.accordion.is-open {
         clearTimeout(timeout_Total);
         timeout_Total = setTimeout(updateData_total, 100);
     }
+    
+    function setSingleDose() {
+        let el = document.getElementById('singleDose');
+        let setTo = true;
+        
+        if (el.checked) {
+            document.getElementById('dose1').checked = true;
+            setTo = false;
+        }
+        
+        for (i=2; i<27; i++) {
+            document.getElementById('dose' + i).checked = setTo;
+        }
+        delayedUpdateData_total();
+    }
 
     function updateData_total() {
         var el = document.getElementById('keChange');
+
+        ymax = document.getElementById('ymaxNumber').valueAsNumber;
 
         Dose = document.getElementById('doseNumber').valueAsNumber;
         Td = document.getElementById('TdNumber').valueAsNumber;
@@ -1533,6 +1558,8 @@ button.accordion.is-open {
         var data_met = makeData_met();
         var data_eff = makeData_eff();
 		var data_branch = makeDataAdaptation();
+        
+        myChart_total.options.scales.y.max = ymax;
         
         myChart_total.data.datasets[0].data = data[1];
         if (document.getElementById('showMetabolite').checked) {
