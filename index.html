@@ -35,10 +35,11 @@
                         let doseNumber = Math.round(t/Td) + 1;
 
                         if (document.getElementById('dose' + doseNumber).checked) {
-                            pt[0] = F/Vd*Dose;
-                        } else {
-                            pt[0] = 0;
+                            pt[0] = pt[0] + F/Vd*Dose;
                         }
+                        /*} else {
+                            pt[0] = 0;
+                        }*/
                     }
                 } else {
                     // IV bolus
@@ -1321,7 +1322,7 @@ button.accordion.is-open {
 </div>
   <script>
     noPoints = 400;
-    step = 0.2;
+    step = 0.05;
 
   	function makeData() {
       var labels = [];
