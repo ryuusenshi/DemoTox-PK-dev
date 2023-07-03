@@ -27,22 +27,35 @@
             ke_m = 0.5;
             F = 1;
             Vd = 1;
+            isIVDose = false;
 
             var V = function(t, pt) {
-                if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
-                    let doseNumber = Math.round(t/Td) + 1;
+                if (!isIVDose) {
+                    if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
+                        let doseNumber = Math.round(t/Td) + 1;
 
-                    if (document.getElementById('dose' + doseNumber).checked) {
-                        pt[0] = Dose;
-                    } else {
-                        pt[0] = 0;
+                        if (document.getElementById('dose' + doseNumber).checked) {
+                            pt[0] = F/Vd*Dose;
+                        } else {
+                            pt[0] = 0;
+                        }
+                    }
+                } else {
+                    // IV bolus
+                    if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
+                        let doseNumber = Math.round(t/Td) + 1;
+
+                        if (document.getElementById('dose' + doseNumber).checked) {
+                            pt[1] = pt[1] + F/Vd*Dose;
+                        }
                     }
                 }
+
 
                 var Ca = pt[0], Cx= pt[1], Cm = pt[2];
                 // return [-ka*Ca, ka*Ca - ke(t)*Cx, Vmax*Cx/(km+Cx) - ke_m*Cm];
                 
-                return [-F/Vd*ka*Ca, F/Vd*ka*Ca - ke(t)*Cx - Vmax*Cx/(km + Cx), Vmax*Cx/(km + Cx) - ke_m*Cm];
+                return [-ka*Ca, ka*Ca - ke(t)*Cx - Vmax*Cx/(km + Cx), Vmax*Cx/(km + Cx) - ke_m*Cm];
             }
 
             var ode_ = new ODE(V);
@@ -1063,6 +1076,9 @@ button.accordion.is-open {
 		<input id="doseNumber" type="number" name="amountInput" min="10" max="55" value="40" step="1" oninput="set('dose', this, 'Range');" />
     <br />
     
+    <label id="isIVLabel" style="float: left; width: 90px;">IV dose? </label><div id="div-isivdose"><input type="checkbox" id="isIVDose" name="isIVDose" onclick="setisIVDose();"></div>
+    <br /><br />
+    
     <label id="singleDoseLabel" style="float: left; width: 90px;">single dose? </label><div id="div-dose1"><input type="checkbox" id="singleDose" name="singleDose" onclick="setSingleDose();"></div>
     <br />
     
@@ -1510,6 +1526,13 @@ button.accordion.is-open {
         for (i=2; i<27; i++) {
             document.getElementById('dose' + i).checked = setTo;
         }
+        delayedUpdateData_total();
+    }
+    
+    function setisIVDose() {
+        let el = document.getElementById('isIVDose');
+        isIVDose = el.checked;
+        
         delayedUpdateData_total();
     }
 
