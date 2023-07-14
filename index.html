@@ -1031,6 +1031,9 @@ button.accordion.is-open {
   <div class="noprint" style="overflow-y: auto; max-height: 500px;">
 
 
+    
+    <label id="isFrozenLabel" style="float: left; width: 180px;">freeze graph </label><div id="div-isfrozen"><input type="checkbox" id="isFrozen" name="isFrozen" onclick="toggleFreeze();"></div>
+    <br /><br />
 
 
   <button class="accordion">IDILI hypotheses</button>
@@ -1061,13 +1064,14 @@ button.accordion.is-open {
 
 
 
-
+    
 
   
   <button class="accordion">Model parameters</button>
   <div class="accordion-content">
     <p>
 	<form>
+
         <label id="ymaxLabel" style="float: left; width: 90px;">y max: </label><input id="ymaxRange" type="range" name="amountRange" min="10" max="550" value="180" step="1" oninput="set('ymax', this, 'Number');" />
         <input id="ymaxNumber" type="number" name="amountInput" min="10" max="550" value="180" step="1" oninput="set('ymax', this, 'Range');" />
     <br />        
@@ -1536,6 +1540,29 @@ button.accordion.is-open {
         
         delayedUpdateData_total();
     }
+    
+    function freezeGraph() {
+        myChart_total.data.datasets[5].data = myChart_total.data.datasets[2].data;
+        myChart_total.data.datasets[6].data = myChart_total.data.datasets[3].data;
+        updateData_total();
+    }
+    
+    function unfreezeGraph() {
+        myChart_total.data.datasets[5].data = undefined;
+        myChart_total.data.datasets[6].data = undefined;
+        updateData_total();
+    }
+    
+    function toggleFreeze() {
+        let is_frozen = document.getElementById('isFrozen').checked;
+        
+        if (is_frozen) {
+            freezeGraph();
+        } else {
+            unfreezeGraph();
+        }
+        
+    }
 
     function updateData_total() {
         var el = document.getElementById('keChange');
@@ -1631,8 +1658,9 @@ button.accordion.is-open {
             {label: "metabolite toxicity threshold", data: [], borderColor: "#7F00FF", backgroundColor: "#FFFFFF", borderDash: [5,2]},
             {label: "drug concentration", data: [], borderColor: "#000000", backgroundColor: "#000000", borderDash: [0,0]},
             {label: "metabolite concentration", data: [], borderColor: "#0000FF", backgroundColor: "#0000FF", borderDash: [0,0]},
-            {label: "efficacy threshold", data: [], borderColor: "#00AA00", backgroundColor: "#FFFFFF", borderDash: [5,2]}
- 
+            {label: "efficacy threshold", data: [], borderColor: "#00AA00", backgroundColor: "#FFFFFF", borderDash: [5,2]},
+            {label: "", data: [], borderColor: "#000000", backgroundColor: "#FFFFFF", borderDash: [5,2]}, // drug frozen
+            {label: "", data: [], borderColor: "#0000FF", backgroundColor: "#FFFFFF", borderDash: [5,2]}  // metabolite frozen
         ]
     },
     options: {
