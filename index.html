@@ -16,66 +16,65 @@
 
 	</script>
    <script>
-            ka = 1;
-            ke = function(t) {
+            let ka = 1;
+            let ke = function(t) {
                 return 0.1;
             };
-            Td = 4;
-            Dose = 40;
-            Vmax = 100;
-            km = 1000;
-            ke_m = 0.5;
-            F = 1;
-            Vd = 1;
-            isIVDose = false;
-
-            var V = function(t, pt) {
-                if (!isIVDose) {
-                    if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
-                        let doseNumber = Math.round(t/Td) + 1;
-
-                        if (document.getElementById('dose' + doseNumber).checked) {
-                            pt[0] = pt[0] + F/Vd*Dose;
-                        }
-                        /*} else {
-                            pt[0] = 0;
-                        }*/
-                    }
-                } else {
-                    // IV bolus
-                    if ((t%Td < 0.01) || ((Td - t%Td) < 0.01)) {
-                        let doseNumber = Math.round(t/Td) + 1;
-
-                        if (document.getElementById('dose' + doseNumber).checked) {
-                            pt[1] = pt[1] + F/Vd*Dose;
-                        }
-                    }
-                }
+            let Td = 4;
+            let Dose = 40;
+            let Vmax = 100;
+            let km = 1000;
+            let ke_m = 0.5;
+            let F = 1;
+            let Vd = 1;
+            let isIVDose = false;
 
 
-                var Ca = pt[0], Cx= pt[1], Cm = pt[2];
-                // return [-ka*Ca, ka*Ca - ke(t)*Cx, Vmax*Cx/(km+Cx) - ke_m*Cm];
+            function doseCallback(i) {
+                let addDose = 0;
                 
-                return [-ka*Ca, ka*Ca - ke(t)*Cx - Vmax*Cx/(km + Cx), Vmax*Cx/(km + Cx) - ke_m*Cm];
-            }
+                if (i % parseInt(Td/step) == 0) {
+                    let doseNumber = Math.round(i*step/Td) + 1;
 
-            var ode_ = new ODE(V);
+                    if (document.getElementById('dose' + doseNumber).checked) {
+                        addDose = Dose;
+                    }
+
+                    if (isIVDose) {
+                        return [0, addDose, 0];
+                    }
+                    return [addDose, 0, 0];
+                }
+                return [0, 0, 0];
+            }
+            
+            let noPoints = 400;
+            let step = 0.05;
+            
+            const ODE = {
+                f: (t, y) => [-ka*y[0], ka*y[0] - ke(t)*y[1] - Vmax*y[1]/(km + y[1]), Vmax*y[1]/(km + y[1]) - ke_m*y[2]],
+                parameters: [[0, 0, 0], 0, parseInt(noPoints*step)]
+            }
+            
+            var solver = new ODEsolver(ODE.f, ...ODE.parameters)
+            
 
             function resolve(results, i) {
                 var c = [];
 
                 for (var j=0; j<noPoints; j++) {
-                    c[j] = results["pts"][j][i];
+                    c[j] = results["ys"][j][i];
                 }
 
                 return c;
             }
 
             function solve() {
-                results = ode_.solve(noPoints, step, 0, [0, 0, 0]);
+                //results = ode_.solve(noPoints, step, 0, [0, 0, 0]);
+                results = solver.rk4(noPoints, doseCallback);
 
                 for (var j=0; j<noPoints; j++) {
-                 if (results["pts"][j][0] > 1000 || results["pts"][j][0] < -1000 || results["pts"][j][1] > 1000 || results["pts"][j][1] < -1000) {
+                 if (results["ys"][j][0] > 1000 || results["ys"][j][0] < -1000 || results["ys"][j][1] > 1000 || results["ys"][j][1] < -1000) {
                     alert("System of differential equations has become numerically unstable, due to last parameter change, and the solution might not make sense. Please change back the parameter, select one of the IDILI hypothesese, or start over."); break;
                  };
                 }
@@ -1325,8 +1324,8 @@ button.accordion.is-open {
 
 </div>
   <script>
-    noPoints = 400;
-    step = 0.05;
+    //noPoints = 400;
+    //step = 0.05;
 
   	function makeData() {
       var labels = [];
